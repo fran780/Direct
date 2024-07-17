@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '851897297142',
     projectId: 'direct-8ed55',
     storageBucket: 'direct-8ed55.appspot.com',
+    androidClientId: '851897297142-la9con9tnvu39cc7cm4hob2ds5jjrgii.apps.googleusercontent.com',
+    iosClientId: '851897297142-urt5s21la2f03h8bq4iv7qev0lobt5hv.apps.googleusercontent.com',
     iosBundleId: 'com.example.direct',
   );
+
 }
