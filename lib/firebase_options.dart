@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAcygpMVUc5ekSt9GHlovxyZ510FRHWJLo',
-    appId: '1:804186586967:android:2a010dd88728356be18812',
-    messagingSenderId: '804186586967',
-    projectId: 'direct-54790',
-    storageBucket: 'direct-54790.appspot.com',
+    apiKey: 'AIzaSyBFvGMNDUNBjJEQsqtF3mki737dXr3sr4A',
+    appId: '1:851897297142:android:2c401edbc6a4dd3fbb24d7',
+    messagingSenderId: '851897297142',
+    projectId: 'direct-8ed55',
+    storageBucket: 'direct-8ed55.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAz7ZdiOLL6kUMXl2aLqEH5qqc09reAepI',
-    appId: '1:804186586967:ios:38210bf417622048e18812',
-    messagingSenderId: '804186586967',
-    projectId: 'direct-54790',
-    storageBucket: 'direct-54790.appspot.com',
+    apiKey: 'AIzaSyDZeNRKmmZ_1JqHyhlf9E7Y2OzILJbAfG8',
+    appId: '1:851897297142:ios:f35ce4d3d12b9e32bb24d7',
+    messagingSenderId: '851897297142',
+    projectId: 'direct-8ed55',
+    storageBucket: 'direct-8ed55.appspot.com',
     iosBundleId: 'com.example.direct',
   );
 }
