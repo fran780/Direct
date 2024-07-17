@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:direct/api/apis.dart';
 import 'package:direct/helper/dialogs.dart';
 import 'package:direct/main.dart';
 import 'package:direct/screens/home_screen.dart';
@@ -62,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       // Once signed in, return the UserCredential
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      return await APIs.auth.signInWithCredential(credential);
     } catch (e) {
       print('\n_signInWithGoogle: $e');
       Dialogs.showSnackbar(
