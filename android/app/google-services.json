@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "804186586967",
+    "project_id": "direct-54790",
+    "storage_bucket": "direct-54790.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:804186586967:android:2a010dd88728356be18812",
+        "android_client_info": {
+          "package_name": "com.direct.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcygpMVUc5ekSt9GHlovxyZ510FRHWJLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
