@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:direct/api/apis.dart';
@@ -51,18 +52,21 @@ class _HomeScreenState extends State<HomeScreen> {
           if (snapshot.hasData) {
             final data = snapshot.data?.docs;
             for (var i in data!) {
-              print('Data: ${i.data()}');
-              list.add(i.data()['name']);
+              // Verificar la estructura de i.data
+              var jsonData = i.data();
+              // Imprimir los datos convertidos a JSON
+              print('Data: ${jsonEncode(jsonData)}');
+              list.add(jsonData['name']);
             }
           }
-
+          
           return ListView.builder(
               itemCount: list.length,
               padding: EdgeInsets.only(top: mq.height * .01),
               physics: BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 //return const ChatUserCard();
-                return Text ('Name: ${list[index]}');
+                return Text('Name: ${list[index]}');
               });
         },
       ),
