@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:direct/api/apis.dart';
 import 'package:direct/widgets/chat_user_card.dart';
 
@@ -6,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
+import '../api/apis.dart';
+import '../widgets/chat_user_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,14 +42,30 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             child: const Icon(Icons.add_comment_rounded)),
       ),
-    
-      body: ListView.builder(
-        itemCount: 16,
-        padding: EdgeInsets.only(top: mq.height * .01),
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, index) {
-          return const ChatUserCard();
-        }),
+
+      body: StreamBuilder(
+        stream: APIs.firestore.collection(('users')).snapshots(),
+        builder: (context, snapshot) {
+          final list = [];
+
+          if (snapshot.hasData) {
+            final data = snapshot.data?.docs;
+            for (var i in data!) {
+              print('Data: ${i.data()}');
+              list.add(i.data()['name']);
+            }
+          }
+
+          return ListView.builder(
+              itemCount: list.length,
+              padding: EdgeInsets.only(top: mq.height * .01),
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                //return const ChatUserCard();
+                return Text ('Name: ${list[index]}');
+              });
+        },
+      ),
     );
   }
 }
