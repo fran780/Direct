@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:direct/api/apis.dart';
+import 'package:direct/models/chat_user.dart';
 import 'package:direct/widgets/chat_user_card.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -20,6 +21,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<ChatUser> list = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,27 +50,36 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder(
         stream: APIs.firestore.collection(('users')).snapshots(),
         builder: (context, snapshot) {
-          final list = [];
+          switch (snapshot.connectionState) {
+            //si los datos estan cargando
+            case ConnectionState.waiting:
+            case ConnectionState.none:
+              return const Center(child: CircularProgressIndicator());
 
-          if (snapshot.hasData) {
-            final data = snapshot.data?.docs;
-            for (var i in data!) {
-              // Verificar la estructura de i.data
-              var jsonData = i.data();
-              // Imprimir los datos convertidos a JSON
-              print('Data: ${jsonEncode(jsonData)}');
-              list.add(jsonData['name']);
-            }
+            //Si algunos o todos los datos están cargados, muéstrelos.
+            case ConnectionState.active:
+            case ConnectionState.done:
+              final data = snapshot.data?.docs;
+              list =
+                  data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+
+              if (list.isNotEmpty) {
+                return ListView.builder(
+                    itemCount: list.length,
+                    padding: EdgeInsets.only(top: mq.height * .01),
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ChatUserCard(user: list[index]);
+                      //return Text('Name: ${list[index]}');
+                    });
+              }
+              else{
+                return const Center(
+                  child: Text('No se encontro conexión',
+                  style: TextStyle(fontSize: 20)),
+                );
+              }
           }
-          
-          return ListView.builder(
-              itemCount: list.length,
-              padding: EdgeInsets.only(top: mq.height * .01),
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                //return const ChatUserCard();
-                return Text('Name: ${list[index]}');
-              });
         },
       ),
     );

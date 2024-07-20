@@ -1,10 +1,13 @@
+import 'package:direct/models/chat_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
 
 class ChatUserCard extends StatefulWidget {
-  const ChatUserCard({super.key});
+  final ChatUser user;
+
+  const ChatUserCard({super.key, required this.user});
 
   @override
   State<ChatUserCard> createState() => _ChatUserCardState();
@@ -20,15 +23,15 @@ class _ChatUserCardState extends State<ChatUserCard> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: InkWell(
         onTap: () {},
-        child: const ListTile(
+        child: ListTile(
           // Imagen de perfil del usuario
-          leading: CircleAvatar(child: Icon(CupertinoIcons.person)),
+          leading: const CircleAvatar(child: Icon(CupertinoIcons.person)),
 
           // Nombre de usuario
-          title: Text('Demo User'),
+          title: Text(widget.user.name),
 
           //Ultimo mensaje
-          subtitle: Text('Last user message', maxLines: 1),
+          subtitle: Text(widget.user.about, maxLines: 1),
 
           // Tiempo del ultimo mensaje
           trailing: Text(
