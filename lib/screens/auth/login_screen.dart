@@ -52,9 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      // Obtain the auth details from the request
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -62,8 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
         idToken: googleAuth?.idToken,
       );
 
-      // Once signed in, return the UserCredential
-      return await APIs.auth.signInWithCredential(credential);
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+
     } catch (e) {
       print('\n_signInWithGoogle: $e');
       Dialogs.showSnackbar(
@@ -71,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return null;
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
