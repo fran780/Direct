@@ -22,6 +22,8 @@ dependencies:
   firebase_auth: ^5.1.2
   #para manejar el ingreso con google
   google_sign_in: ^6.2.1
+  #para acceder a la base de datos firestore
+  cloud_firestore: ^5.1.0
 
 dev_dependencies:
   flutter_test:
