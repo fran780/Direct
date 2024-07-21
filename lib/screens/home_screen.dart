@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:direct/api/apis.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:direct/widgets/chat_user_card.dart';
@@ -10,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
-import '../api/apis.dart';
-import '../widgets/chat_user_card.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,7 +29,14 @@ class _HomeScreenState extends State<HomeScreen> {
           //boton para buscar usuarios
           IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
           //boton de mas opciones
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ProfileScreen(user: list[0])));
+              },
+              icon: const Icon(Icons.more_vert))
         ],
       ),
       //Boton flotante para agregar un nuevo usuario
@@ -72,11 +75,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       return ChatUserCard(user: list[index]);
                       //return Text('Name: ${list[index]}');
                     });
-              }
-              else{
+              } else {
                 return const Center(
                   child: Text('No se encontro conexión',
-                  style: TextStyle(fontSize: 20)),
+                      style: TextStyle(fontSize: 20)),
                 );
               }
           }
