@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/api/apis.dart';
+import 'package:direct/helper/dialogs.dart';
 import 'package:direct/models/chat_user.dart';
+import 'package:direct/screens/auth/login_screen.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +32,23 @@ class _HomeScreenState extends State<ProfileScreen> {
           child: FloatingActionButton.extended(
             backgroundColor: Colors.redAccent,
             onPressed: () async {
-              await APIs.auth.signOut();
-              await GoogleSignIn().signOut();
+              //mostrar progresos de dialogo
+              Dialogs.showProgressBar(context);
+
+              //salir de la app
+              await APIs.auth.signOut().then((value) async {
+                await GoogleSignIn().signOut().then((value) {
+                  //Para ocultar el dialogo del progreso
+                  Navigator.pop(context);
+
+                  //para volver a la pantalla de inicio
+                  Navigator.pop(context);
+
+                  //reemplazando la pantalla de inicio con la pantalla de inicio de sesión
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (_) => const LoginScreen()));
+                });
+              });
             },
             icon: const Icon(Icons.logout),
             label: const Text('Logout'),
@@ -47,16 +64,36 @@ class _HomeScreenState extends State<ProfileScreen> {
               SizedBox(width: mq.width, height: mq.height * .03),
 
               // Imagen de perfil del usuario
-              ClipRRect(
-                borderRadius: BorderRadius.circular(mq.height * .1),
-                child: CachedNetworkImage(
-                  width: mq.height * .2,
-                  height: mq.height * .2,
-                  fit: BoxFit.fill,
-                  imageUrl: widget.user.image,
-                  errorWidget: (context, url, error) =>
-                      const CircleAvatar(child: Icon(CupertinoIcons.person)),
-                ),
+              Stack(
+                children: [
+                  //foto de perfil
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .1),
+                    child: CachedNetworkImage(
+                      width: mq.height * .2,
+                      height: mq.height * .2,
+                      fit: BoxFit.fill,
+                      imageUrl: widget.user.image,
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                          child: Icon(CupertinoIcons.person)),
+                    ),
+                  ),
+
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: MaterialButton(
+                      elevation: 1,
+                      onPressed: () {},
+                      shape: const CircleBorder(),
+                      color: Colors.white,
+                      child: const Icon(
+                        Icons.edit,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  )
+                ],
               ),
 
               //para añadir espacio
