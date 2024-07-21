@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,11 +23,10 @@ class APIs {
   //Para obtner informacion actual del usuario
   static Future<void> getSelfInfo() async {
     await firestore.collection('users').doc(user.uid).get().then((user) async {
-      if (user.exists){
+      if (user.exists) {
         me = ChatUser.fromJson(user.data()!);
         print('My Data: ${user.data()}');
-      }
-      else{
+      } else {
         await createUser().then((value) => getSelfInfo());
       }
     });
@@ -61,5 +59,16 @@ class APIs {
         .collection(('users'))
         .where('id', isNotEqualTo: user.uid)
         .snapshots();
+  }
+
+// para actualizar la informacion del usuario
+  static Future<void> updateUserInfo() async {
+    return await firestore
+        .collection('users')
+        .doc(user.uid)
+        .update({
+          'name': me.name,
+          'about': me.about,
+        });
   }
 }

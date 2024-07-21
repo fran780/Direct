@@ -22,130 +22,160 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<ProfileScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: const Text('Profile Screen')),
-        //Boton flotante para agregar un nuevo usuario
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: FloatingActionButton.extended(
-            backgroundColor: Colors.redAccent,
-            onPressed: () async {
-              //mostrar progresos de dialogo
-              Dialogs.showProgressBar(context);
+    return GestureDetector(
+      //para ocultar teclado
+      onTap: () => FocusScope.of(context).unfocus,
 
-              //salir de la app
-              await APIs.auth.signOut().then((value) async {
-                await GoogleSignIn().signOut().then((value) {
-                  //Para ocultar el dialogo del progreso
-                  Navigator.pop(context);
+      child: Scaffold(
+          appBar: AppBar(title: const Text('Profile Screen')),
+          //Boton flotante para agregar un nuevo usuario
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: FloatingActionButton.extended(
+              backgroundColor: Colors.redAccent,
+              onPressed: () async {
+                //mostrar progresos de dialogo
+                Dialogs.showProgressBar(context);
 
-                  //para volver a la pantalla de inicio
-                  Navigator.pop(context);
+                //salir de la app
+                await APIs.auth.signOut().then((value) async {
+                  await GoogleSignIn().signOut().then((value) {
+                    //Para ocultar el dialogo del progreso
+                    Navigator.pop(context);
 
-                  //reemplazando la pantalla de inicio con la pantalla de inicio de sesión
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (_) => const LoginScreen()));
+                    //para volver a la pantalla de inicio
+                    Navigator.pop(context);
+
+                    //reemplazando la pantalla de inicio con la pantalla de inicio de sesión
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()));
+                  });
                 });
-              });
-            },
-            icon: const Icon(Icons.logout),
-            label: const Text('Logout'),
+              },
+              icon: const Icon(Icons.logout),
+              label: const Text('Logout'),
+            ),
           ),
-        ),
 
-        // body:
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: mq.width * .05),
-          child: Column(
-            children: [
-              //para añadir espacio
-              SizedBox(width: mq.width, height: mq.height * .03),
+          // body:
+          body: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: mq.width * .05),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    //para añadir espacio
+                    SizedBox(width: mq.width, height: mq.height * .03),
 
-              // Imagen de perfil del usuario
-              Stack(
-                children: [
-                  //foto de perfil
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(mq.height * .1),
-                    child: CachedNetworkImage(
-                      width: mq.height * .2,
-                      height: mq.height * .2,
-                      fit: BoxFit.fill,
-                      imageUrl: widget.user.image,
-                      errorWidget: (context, url, error) => const CircleAvatar(
-                          child: Icon(CupertinoIcons.person)),
+                    // Imagen de perfil del usuario
+                    Stack(
+                      children: [
+                        //foto de perfil
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(mq.height * .1),
+                          child: CachedNetworkImage(
+                            width: mq.height * .2,
+                            height: mq.height * .2,
+                            fit: BoxFit.fill,
+                            imageUrl: widget.user.image,
+                            errorWidget: (context, url, error) =>
+                                const CircleAvatar(
+                                    child: Icon(CupertinoIcons.person)),
+                          ),
+                        ),
+
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: MaterialButton(
+                            elevation: 1,
+                            onPressed: () {},
+                            shape: const CircleBorder(),
+                            color: Colors.white,
+                            child: const Icon(
+                              Icons.edit,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  ),
 
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: MaterialButton(
-                      elevation: 1,
-                      onPressed: () {},
-                      shape: const CircleBorder(),
-                      color: Colors.white,
-                      child: const Icon(
+                    //para añadir espacio
+                    SizedBox(height: mq.height * .03),
+
+                    Text(widget.user.email,
+                        style: TextStyle(color: Colors.black54, fontSize: 16)),
+
+                    SizedBox(height: mq.height * .05),
+
+                    TextFormField(
+                      initialValue: widget.user.name,
+                      onSaved: (val) => APIs.me.name = val ?? '',
+                      validator: (val) => val != null && val.isNotEmpty
+                          ? null
+                          : 'Required Field',
+                      decoration: InputDecoration(
+                          prefixIcon:
+                              const Icon(Icons.person, color: Colors.blue),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          hintText: 'eg. Happy Singh',
+                          label: Text('Name')),
+                    ),
+
+                    SizedBox(height: mq.height * .02),
+
+                    TextFormField(
+                      initialValue: widget.user.about,
+                      onSaved: (val) => APIs.me.about = val ?? '',
+                      validator: (val) => val != null && val.isNotEmpty
+                          ? null
+                          : 'Required Field',
+                      decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.info_outline,
+                              color: Colors.blue),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          hintText: 'eg. Feeling Happy',
+                          label: Text('About')),
+                    ),
+
+                    SizedBox(height: mq.height * .05),
+
+                    // Actualizar el boton de perfil
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          shape: StadiumBorder(),
+                          minimumSize: Size(mq.width * .5, mq.height * .06)),
+                      onPressed: () {
+                        if(_formKey.currentState!.validate()){
+                          _formKey.currentState!.save();
+                          APIs.updateUserInfo().then((value){
+                            Dialogs.showSnackbar(context, 'Perfil actualizado correctamente');
+                          });
+                        }
+
+                      },
+                      icon: const Icon(
                         Icons.edit,
-                        color: Colors.blue,
+                        size: 28,
                       ),
-                    ),
-                  )
-                ],
-              ),
-
-              //para añadir espacio
-              SizedBox(height: mq.height * .03),
-
-              Text(widget.user.email,
-                  style: TextStyle(color: Colors.black54, fontSize: 16)),
-
-              SizedBox(height: mq.height * .05),
-
-              TextFormField(
-                initialValue: widget.user.name,
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.person, color: Colors.blue),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    hintText: 'eg. Happy Singh',
-                    label: Text('Name')),
-              ),
-
-              SizedBox(height: mq.height * .02),
-
-              TextFormField(
-                initialValue: widget.user.about,
-                decoration: InputDecoration(
-                    prefixIcon:
-                        const Icon(Icons.info_outline, color: Colors.blue),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    hintText: 'eg. Feeling Happy',
-                    label: Text('About')),
-              ),
-
-              SizedBox(height: mq.height * .05),
-
-              // Actualizar el boton de perfil
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    shape: StadiumBorder(),
-                    minimumSize: Size(mq.width * .5, mq.height * .06)),
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.edit,
-                  size: 28,
+                      label: const Text(
+                        'UPDATE',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    )
+                  ],
                 ),
-                label: const Text(
-                  'UPDATE',
-                  style: TextStyle(fontSize: 16),
-                ),
-              )
-            ],
-          ),
-        ));
+              ),
+            ),
+          )),
+    );
   }
 }
