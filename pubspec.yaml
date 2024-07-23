@@ -26,8 +26,10 @@ dependencies:
   cloud_firestore: ^5.1.0
   #para mostrar imagenes de la red
   cached_network_image: ^3.3.1
-  
+  #para elegir imagenes
   image_picker: ^1.1.2
+  #para acceder a firebase storage
+  firebase_storage: ^12.1.1
 
 dev_dependencies:
   flutter_test:
