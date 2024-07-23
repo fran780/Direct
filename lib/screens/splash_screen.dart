@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (APIs.auth.currentUser != null) {
         print("User: ${APIs.auth.currentUser}");
-        
+
         //navega a home screen
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => const HomeScreen()));

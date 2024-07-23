@@ -1,5 +1,3 @@
-//import 'dart:math';
-
 import 'dart:io';
 
 import 'package:direct/api/apis.dart';
@@ -17,7 +15,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-//Pantalla Login - implementa iniciar sesion o registrase con google
+// Pantalla Login - implementa iniciar sesión o registrarse con Google
 class _LoginScreenState extends State<LoginScreen> {
   bool _isAnimate = false;
 
@@ -30,25 +28,25 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     });
   }
-  //btn que maneja iniciar sesion con google con un clock
+
+  // btn que maneja iniciar sesión con Google con un click
   _handleGoogleBtnClick() {
-    //para mostrar la barra de progreso
+    // para mostrar la barra de progreso
     Dialogs.showProgressBar(context);
     _signInWithGoogle().then((user) async {
-      //para esconder la barra de progreso
+      // para esconder la barra de progreso
       Navigator.pop(context);
       if (user != null) {
         print("\nUser: ${user.user}");
         print('\nUserAdditionalInfo: ${user.additionalUserInfo}');
 
-        if((await APIs.userExists())) {
+        if ((await APIs.userExists())) {
           Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-        }
-        else{
+              context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+        } else {
           await APIs.createUser().then((value) {
             Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                context, MaterialPageRoute(builder: (_) => const HomeScreen()));
           });
         }
       }
@@ -80,11 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    //inicializa el media query (para obtener el tamoño de la pnatalla del dispositivo)
-    //mq = MediaQuery.of(context).size;
+    // inicializa el media query (para obtener el tamaño de la pantalla del dispositivo)
+    mq = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(
@@ -93,16 +90,16 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Stack(
         children: [
-          //app logo
+          // app logo
           AnimatedPositioned(
               top: mq.height * .15,
               right: _isAnimate ? mq.width * .25 : -mq.width * .5,
               width: mq.width * .5,
               duration: const Duration(seconds: 1),
               child: Image.asset('images/icon.png')),
-          //boton de login google
+          // botón de login google
           Positioned(
-              bottom: mq.height * .15,
+              bottom: mq.height * .19,
               left: mq.width * .05,
               width: mq.width * .9,
               height: mq.height * .06,
@@ -114,21 +111,54 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     _handleGoogleBtnClick();
                   },
-                  //icono google
+                  // icono google
                   icon:
                       Image.asset('images/google.png', height: mq.height * .03),
-                  //texto Loging con google
+                  // texto Loging con google
                   label: RichText(
                       text: TextSpan(
                           style: TextStyle(
                               color: const Color.fromARGB(255, 255, 255, 255),
                               fontSize: 16),
                           children: [
-                        TextSpan(text: 'Iniciar Sesion con '),
+                        TextSpan(text: 'Iniciar Sesión con '),
                         TextSpan(
                             text: 'Google',
                             style: TextStyle(fontWeight: FontWeight.w500)),
                       ])))),
+          // textos interactivos
+          Positioned(
+            bottom: mq.height * .08,
+            left: mq.width * .05,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/developers');
+              },
+              child: Text(
+                'Desarrolladores',
+                style: TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: mq.height * .08,
+            right: mq.width * .05,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/features');
+              },
+              child: Text(
+                'Acerca de',
+                style: TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
