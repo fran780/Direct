@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Direct',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           appBarTheme: const AppBarTheme(
         centerTitle: true,
