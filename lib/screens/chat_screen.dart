@@ -21,22 +21,28 @@ class _ChatScreenState extends State<ChatScreen> {
           automaticallyImplyLeading: false,
           flexibleSpace: _appBar(),
         ),
+
+        //body
+        body: Column(
+          children: [_chaInput()],
+        ),
       ),
     );
   }
 
   Widget _appBar() {
     return InkWell(
-      onTap: (){},
+      onTap: () {},
       child: Row(
         children: [
+          // Boton de regresar
           IconButton(
               onPressed: () => Navigator.pop(context),
               icon: const Icon(
                 Icons.arrow_back,
                 color: Colors.black54,
               )),
-      
+
           //Imagen de perfil de usuario
           ClipRRect(
             borderRadius: BorderRadius.circular(mq.height * .03),
@@ -48,10 +54,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   const CircleAvatar(child: Icon(CupertinoIcons.person)),
             ),
           ),
-      
+
           //para añadir un espacio
           const SizedBox(width: 10),
-      
+
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,6 +75,77 @@ class _ChatScreenState extends State<ChatScreen> {
                       color: Colors.black54,
                       fontWeight: FontWeight.w500)),
             ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _chaInput() {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          vertical: mq.height * .01, horizontal: mq.width * .025),
+      child: Row(
+        children: [
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Row(
+                children: [
+                  // Boton de emoji
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.emoji_emotions,
+                          color: Colors.blueAccent, size: 25)),
+                  const Expanded(
+                      child: TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                        hintText: 'Escribe algo...',
+                        hintStyle: TextStyle(
+                          color: Colors.blueAccent,
+                        ),
+                        border: InputBorder.none),
+                  )),
+
+                  // Boton de galeria
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.image,
+                        color: Colors.blueAccent,
+                        size: 26,
+                      )),
+
+                  // Boton de camara
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.camera_alt_rounded,
+                        color: Colors.blueAccent,
+                      )),
+
+                  //añadir un espacio
+                  SizedBox(width: mq.width * .02),
+                ],
+              ),
+            ),
+          ),
+
+          //Boton de enviar mensaje
+          MaterialButton(
+            onPressed: () {},
+            minWidth: 0,
+            padding: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
+            shape: CircleBorder(),
+            color: Colors.green,
+            child: const Icon(
+              Icons.send,
+              color: Colors.white,
+              size: 28,
+            ),
           )
         ],
       ),
