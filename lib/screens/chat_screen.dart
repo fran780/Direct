@@ -24,7 +24,47 @@ class _ChatScreenState extends State<ChatScreen> {
 
         //body
         body: Column(
-          children: [_chaInput()],
+          children: [
+            Expanded(
+              child: StreamBuilder(
+                //stream: APIs.getAllUsers(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    //si los datos estan cargando
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                    //return const Center(child: CircularProgressIndicator());
+
+                    //Si algunos o todos los datos están cargados, muéstrelos.
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      /*final data = snapshot.data?.docs;
+                    _list =
+                        data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
+                            [];
+                    */
+                      final _list = [];
+
+                      if (_list.isNotEmpty) {
+                        return ListView.builder(
+                            itemCount: _list.length,
+                            padding: EdgeInsets.only(top: mq.height * .01),
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Text('Message: ${_list[index]}');
+                            });
+                      } else {
+                        return const Center(
+                          child: Text('Di Hola! 🤙🏼',
+                              style: TextStyle(fontSize: 20)),
+                        );
+                      }
+                  }
+                }, stream: null,
+              ),
+            ),
+            _chaInput()
+          ],
         ),
       ),
     );
