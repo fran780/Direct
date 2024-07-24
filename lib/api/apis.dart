@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:direct/models/chat_user.dart';
+import 'package:direct/models/message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -69,44 +70,57 @@ class APIs {
 
 // para actualizar la informacion del usuario
   static Future<void> updateUserInfo() async {
-    return await firestore
-        .collection('users')
-        .doc(user.uid)
-        .update({
-          'name': me.name,
-          'about': me.about,
-        });
+    return await firestore.collection('users').doc(user.uid).update({
+      'name': me.name,
+      'about': me.about,
+    });
   }
 
 // para actualizar foto de perfil de usuario
-static Future<void> updateProfilePicture(File file) async{
-  final ext = file.path.split('.').last;
-  print('Extension: $ext');
-  final ref = storage.ref().child('profile_pictures/${user.uid}.$ext');
-  await ref
-    .putFile(file, SettableMetadata(contentType: 'image/$ext'))
-    .then((p0){
-    print('Data Transferred: ${p0.bytesTransferred / 1000} kb');
+  static Future<void> updateProfilePicture(File file) async {
+    final ext = file.path.split('.').last;
+    print('Extension: $ext');
+    final ref = storage.ref().child('profile_pictures/${user.uid}.$ext');
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {
+      print('Data Transferred: ${p0.bytesTransferred / 1000} kb');
     });
     me.image = await ref.getDownloadURL();
     await firestore
         .collection('users')
         .doc(user.uid)
-        .update({
-          'image': me.image
-        });
+        .update({'image': me.image});
   }
 
   // *************** Chat Screen Related APIs *******************
 
+  static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
+      ? '${user.uid}_$id'
+      : '${id}_${user.uid}';
+
 //para conseguir al usuario de la base de datos
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
+      ChatUser user) {
     return firestore
-        .collection('messages')
+        .collection('chats/${getConversationID(user.id)}/messages/')
         .snapshots();
   }
+
+  //para enviar mensajes
+  static Future<void> sendMessage(ChatUser chatUser, String msg) async {
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
+
+    final Message message = Message(
+        told: chatUser.id,
+        msg: msg,
+        read: '',
+        type: Type.text,
+        fromld: user.uid,
+        sent: time);
+
+    final ref = firestore
+      .collection('chats/${getConversationID(chatUser.id)}/messages/');
+    await ref.doc(time).set(message.toJson());
+  }
 }
-
-
-
-
