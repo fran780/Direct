@@ -96,4 +96,17 @@ static Future<void> updateProfilePicture(File file) async{
           'image': me.image
         });
   }
+
+  // *************** Chat Screen Related APIs *******************
+
+//para conseguir al usuario de la base de datos
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
+    return firestore
+        .collection('messages')
+        .snapshots();
+  }
 }
+
+
+
+

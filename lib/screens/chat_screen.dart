@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/main.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../api/apis.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -27,23 +32,24 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Expanded(
               child: StreamBuilder(
-                //stream: APIs.getAllUsers(),
+                stream: APIs.getAllMessages(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     //si los datos estan cargando
                     case ConnectionState.waiting:
                     case ConnectionState.none:
-                    //return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
 
                     //Si algunos o todos los datos están cargados, muéstrelos.
                     case ConnectionState.active:
                     case ConnectionState.done:
-                      /*final data = snapshot.data?.docs;
-                    _list =
+                      final data = snapshot.data?.docs;
+                      log('Data: ${jsonEncode(data![0].data())}');
+                    /*_list =
                         data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
                             [];
                     */
-                      final _list = [];
+                      final _list = ['hola', 'hi'];
 
                       if (_list.isNotEmpty) {
                         return ListView.builder(
@@ -55,12 +61,12 @@ class _ChatScreenState extends State<ChatScreen> {
                             });
                       } else {
                         return const Center(
-                          child: Text('Di Hola! 🤙🏼',
+                          child: Text('Dí hola! 🤙🏼',
                               style: TextStyle(fontSize: 20)),
                         );
                       }
                   }
-                }, stream: null,
+                },
               ),
             ),
             _chaInput()

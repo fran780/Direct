@@ -1,7 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
-//import 'dart:math';
 
-//import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/api/apis.dart';
 import 'package:direct/helper/dialogs.dart';
@@ -10,7 +9,6 @@ import 'package:direct/screens/auth/login_screen.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -234,8 +232,8 @@ class _HomeScreenState extends State<ProfileScreen> {
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         // Pick an image.
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.gallery, imageQuality: 80);
                         if (image != null) {
                           print(
                               'Image Path: ${image.path} -- MimeType: ${image.mimeType}');
@@ -256,18 +254,17 @@ class _HomeScreenState extends State<ProfileScreen> {
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         // Pick an image.
-                        final XFile? image =
-                            await picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 80);
                         if (image != null) {
-                          print(
-                              'Image Path: ${image.path}');
+                          log('Image Path: ${image.path}');
                           setState(() {
                             _image = image.path;
                           });
 
                           APIs.updateProfilePicture(File(_image!));
                           // for hiding bottom sheet
-                          Navigator.pop(context);
+                          if (mounted) Navigator.pop(context);
                         }
                       },
                       child: Image.asset('images/camera.png')),
