@@ -29,6 +29,8 @@ dependencies:
   image_picker: ^1.1.2
   #para acceder a firebase storage
   firebase_storage: ^12.1.1
+  #Para mostrar Emojis
+  emoji_picker_flutter: ^1.5.1
 
 dev_dependencies:
   flutter_test:
