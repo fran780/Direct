@@ -98,14 +98,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 
                 if(_showEmoji)
                 SizedBox(
-                  height: mq.height * .35,
+                  height: mq.height * .30,
                   child: EmojiPicker(
                     textEditingController:
                         _textController, // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]
                     config: Config(
                       bgColor: const Color.fromARGB(255, 234, 248, 255),
-                      columns: 8,
-                      emojiSizeMax: 32 * (Platform.isIOS ? 1.20 : 1.0),
+                      columns: 7,
+                      emojiSizeMax: 28 * (Platform.isIOS ? 1.20 : 1.0),
                     ),
                   ),
                 )
