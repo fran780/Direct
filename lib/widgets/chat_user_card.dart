@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/api/apis.dart';
+import 'package:direct/helper/my_date_util.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:direct/models/message.dart';
 import 'package:direct/screens/chat_screen.dart';
@@ -34,13 +35,12 @@ class _ChatUserCardState extends State<ChatUserCard> {
                     builder: (_) => ChatScreen(user: widget.user)));
           },
           child: StreamBuilder(
-            stream: APIs.getAllMessages(widget.user),
+            stream: APIs.getLastMessage(widget.user),
             builder: (context, snapshot) {
               final data = snapshot.data?.docs;
               final list =
                   data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
               if (list.isNotEmpty) _message = list[0];
-              
 
               return ListTile(
                 leading: ClipRRect(
@@ -53,17 +53,32 @@ class _ChatUserCardState extends State<ChatUserCard> {
                         const CircleAvatar(child: Icon(CupertinoIcons.person)),
                   ),
                 ),
+
+
                 title: Text(widget.user.name),
+
+
                 subtitle: Text(
                     _message != null ? _message!.msg : widget.user.about,
                     maxLines: 1),
-                trailing: Container(
-                  width: 15,
-                  height: 15,
-                  decoration: BoxDecoration(
-                      color: Colors.greenAccent.shade400,
-                      borderRadius: BorderRadius.circular(10)),
-                ),
+
+                    
+                trailing: _message == null
+                    ? null
+                    : _message!.read.isEmpty &&
+                            _message!.fromld != APIs.user.uid
+                        ? Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                                color: Colors.greenAccent.shade400,
+                                borderRadius: BorderRadius.circular(10)),
+                          )
+                        : Text(
+                            MyDateUtil.getLastMessageTime(
+                                context: context, time: _message!.sent),
+                            style: const TextStyle(color: Colors.black54),
+                          ),
               );
             },
           )),
