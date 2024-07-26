@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../api/apis.dart';
+
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
   const ChatScreen({super.key, required this.user});
@@ -27,8 +28,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   final _textController = TextEditingController();
 
-  //
-  bool _showEmoji = false;
+  //PAra verificar si la imagen se esta subiendo
+  bool _showEmoji = false, _isUploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +37,15 @@ class _ChatScreenState extends State<ChatScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: SafeArea(
         // ignore: deprecated_member_use
-        child: WillPopScope(onWillPop: (){
-          if(_showEmoji){
-            setState(() =>
-              _showEmoji = !_showEmoji);
-            return Future.value(false);
-          } else{
-            return Future.value(true);
-          }
-        },
+        child: WillPopScope(
+          onWillPop: () {
+            if (_showEmoji) {
+              setState(() => _showEmoji = !_showEmoji);
+              return Future.value(false);
+            } else {
+              return Future.value(true);
+            }
+          },
           child: Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
@@ -52,12 +53,11 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
 
             backgroundColor: Color.fromARGB(255, 241, 250, 249),
-                
+
             //body
             body: Column(
               children: [
                 Expanded(
-                
                   child: StreamBuilder(
                     stream: APIs.getAllMessages(widget.user),
                     builder: (context, snapshot) {
@@ -66,19 +66,20 @@ class _ChatScreenState extends State<ChatScreen> {
                         case ConnectionState.waiting:
                         case ConnectionState.none:
                           return const SizedBox();
-                
+
                         //Si algunos o todos los datos están cargados, muéstrelos.
                         case ConnectionState.active:
                         case ConnectionState.done:
                           final data = snapshot.data?.docs;
-                
+
                           _list = data
                                   ?.map((e) => Message.fromJson(e.data()))
                                   .toList() ??
                               [];
-                
+
                           if (_list.isNotEmpty) {
                             return ListView.builder(
+                                reverse: true,
                                 itemCount: _list.length,
                                 padding: EdgeInsets.only(top: mq.height * .01),
                                 physics: BouncingScrollPhysics(),
@@ -95,22 +96,31 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   ),
                 ),
-                
+
+                //indicador de barra
+                if(_isUploading)
+                const Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      child: CircularProgressIndicator(strokeWidth: 2))),
+
+                //
                 _chaInput(),
-                
-                if(_showEmoji)
-                SizedBox(
-                  height: mq.height * .30,
-                  child: EmojiPicker(
-                    textEditingController:
-                        _textController, // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]
-                    config: Config(
-                      bgColor: const Color.fromARGB(255, 234, 248, 255),
-                      columns: 7,
-                      emojiSizeMax: 28 * (Platform.isIOS ? 1.20 : 1.0),
+                //
+                if (_showEmoji)
+                  SizedBox(
+                    height: mq.height * .30,
+                    child: EmojiPicker(
+                      textEditingController:
+                          _textController, // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]
+                      config: Config(
+                        bgColor: const Color.fromARGB(255, 234, 248, 255),
+                        columns: 7,
+                        emojiSizeMax: 28 * (Platform.isIOS ? 1.20 : 1.0),
+                      ),
                     ),
-                  ),
-                )
+                  )
               ],
             ),
           ),
@@ -195,10 +205,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     controller: _textController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    onTap: (){
-                    if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
+                    onTap: () {
+                      if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
                     },
-
                     decoration: const InputDecoration(
                         hintText: 'Escribe algo...',
                         hintStyle: TextStyle(
@@ -209,7 +218,20 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   // Boton de galeria
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+
+                        // Picking multiple image.
+                        final List<XFile> images =
+                            await picker.pickMultiImage(imageQuality: 70);
+                        //uploading and sending image una por una
+                        for (var i in images) {
+                          log('Image Path: ${i.path}');
+                          setState(() => _isUploading = true);
+                          await APIs.sendChatImage(widget.user, File(i.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
                       icon: const Icon(
                         Icons.image,
                         color: Colors.blueAccent,
@@ -220,21 +242,21 @@ class _ChatScreenState extends State<ChatScreen> {
                   IconButton(
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
-                        
-                          // Pick an image.
+
+                        // Pick an image.
                         final XFile? image = await picker.pickImage(
                             source: ImageSource.camera, imageQuality: 70);
                         if (image != null) {
                           log('Image Path: ${image.path}');
-                          
+                          setState(() => _isUploading = true);
+
                           await APIs.sendChatImage(
-                            widget.user, File(image.path));
-                          
+                              widget.user, File(image.path));
+                              setState(() => _isUploading = false);
                         }
                       },
-                      icon: const Icon(
-                        Icons.camera_alt_rounded,
-                        color: Colors.blueAccent, size: 26)),
+                      icon: const Icon(Icons.camera_alt_rounded,
+                          color: Colors.blueAccent, size: 26)),
 
                   //añadir un espacio
                   SizedBox(width: mq.width * .02),
