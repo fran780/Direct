@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:developer';
+
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/helper/my_date_util.dart';
@@ -263,7 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         final XFile? image = await picker.pickImage(
                             source: ImageSource.camera, imageQuality: 70);
                         if (image != null) {
-                          log('Image Path: ${image.path}');
+                          print('Image Path: ${image.path}');
                           setState(() => _isUploading = true);
 
                           await APIs.sendChatImage(

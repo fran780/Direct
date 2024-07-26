@@ -46,8 +46,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(mq.height * .03),
                   child: CachedNetworkImage(
-                    width: mq.height * 0.055,
-                    height: mq.height * 0.55,
+                    width: mq.height * .055,
+                    height: mq.height * .055,
                     imageUrl: widget.user.image,
                     errorWidget: (context, url, error) =>
                         const CircleAvatar(child: Icon(CupertinoIcons.person)),
