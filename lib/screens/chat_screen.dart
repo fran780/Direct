@@ -242,7 +242,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             await picker.pickMultiImage(imageQuality: 70);
                         //uploading and sending image una por una
                         for (var i in images) {
-                          log('Image Path: ${i.path}');
+                          print('Image Path: ${i.path}');
                           setState(() => _isUploading = true);
                           await APIs.sendChatImage(widget.user, File(i.path));
                           setState(() => _isUploading = false);
