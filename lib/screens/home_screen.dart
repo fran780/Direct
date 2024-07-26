@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 //los eventos de activo o inactivo
     SystemChannels.lifecycle.setMessageHandler((message) {
-    log('Message: $message');
+    print('Message: $message');
       
       if (message.toString().contains('resume'))APIs.updateActiveStatus(true);
       if (message.toString().contains('pause'))APIs.updateActiveStatus(false);
