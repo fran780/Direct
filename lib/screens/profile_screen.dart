@@ -253,6 +253,7 @@ class _HomeScreenState extends State<ProfileScreen> {
                           fixedSize: Size(mq.width * .2, mq.height * .20)),
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
+                        
                         // Pick an image.
                         final XFile? image = await picker.pickImage(
                             source: ImageSource.camera, imageQuality: 80);

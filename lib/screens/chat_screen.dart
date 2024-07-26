@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:direct/models/message.dart';
 import 'package:direct/widgets/message_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../api/apis.dart';
 class ChatScreen extends StatefulWidget {
@@ -216,11 +218,23 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   // Boton de camara
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        
+                          // Pick an image.
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 70);
+                        if (image != null) {
+                          log('Image Path: ${image.path}');
+                          
+                          await APIs.sendChatImage(
+                            widget.user, File(image.path));
+                          
+                        }
+                      },
                       icon: const Icon(
                         Icons.camera_alt_rounded,
-                        color: Colors.blueAccent,
-                      )),
+                        color: Colors.blueAccent, size: 26)),
 
                   //añadir un espacio
                   SizedBox(width: mq.width * .02),
@@ -233,7 +247,7 @@ class _ChatScreenState extends State<ChatScreen> {
           MaterialButton(
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                APIs.sendMessage(widget.user, _textController.text);
+                APIs.sendMessage(widget.user, _textController.text, Type.text);
                 _textController.text = '';
               }
             },
