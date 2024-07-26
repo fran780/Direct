@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:direct/helper/my_date_util.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 import 'package:direct/main.dart';
@@ -98,12 +99,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
 
                 //indicador de barra
-                if(_isUploading)
-                const Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                      child: CircularProgressIndicator(strokeWidth: 2))),
+                if (_isUploading)
+                  const Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                          child: CircularProgressIndicator(strokeWidth: 2))),
 
                 //
                 _chaInput(),
@@ -131,53 +133,67 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _appBar() {
     return InkWell(
-      onTap: () {},
-      child: Row(
-        children: [
-          // Boton de regresar
-          IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black54,
-              )),
+        onTap: () {},
+        child: StreamBuilder(
+            stream: APIs.getUserInfo(widget.user),
+            builder: (context, snapshot) {
+              final data = snapshot.data?.docs;
+              final list =
+                  data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+            
 
-          //Imagen de perfil de usuario
-          ClipRRect(
-            borderRadius: BorderRadius.circular(mq.height * .03),
-            child: CachedNetworkImage(
-              width: mq.height * .05,
-              height: mq.height * .05,
-              imageUrl: widget.user.image,
-              errorWidget: (context, url, error) =>
-                  const CircleAvatar(child: Icon(CupertinoIcons.person)),
-            ),
-          ),
+              return Row(
+                children: [
+                  // Boton de regresar
+                  IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.black54,
+                      )),
 
-          //para añadir un espacio
-          const SizedBox(width: 10),
+                  //Imagen de perfil de usuario
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .03),
+                    child: CachedNetworkImage(
+                      width: mq.height * .05,
+                      height: mq.height * .05,
+                      imageUrl: list.isNotEmpty ? list[0].image :widget.user.image,
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                          child: Icon(CupertinoIcons.person)),
+                    ),
+                  ),
 
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(widget.user.name,
-                  style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w500)),
-              //para añadir un espacio
-              const SizedBox(height: 2),
-              const Text('Última vez a las 12:00 pm',
-                  style: const TextStyle(
-                      fontSize: 13,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500)),
-            ],
-          )
-        ],
-      ),
-    );
+                  //para añadir un espacio
+                  const SizedBox(width: 10),
+
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text( list.isNotEmpty ? list[0].name : widget.user.name,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500)),
+
+                      //para añadir un espacio
+                      const SizedBox(height: 2),
+
+                       Text(list.isNotEmpty ? 
+                       list[0]. isOnline ? 'Online' :
+                       MyDateUtil.getLastActiveTime(context: context, lastActive: list[0].lastActive)
+                       : MyDateUtil.getLastActiveTime(context: context, lastActive: widget.user.lastActive),
+                          style: 
+                          const TextStyle(
+                              fontSize: 13,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500)),
+                    ],
+                  )
+                ],
+              );
+            }));
   }
 
   Widget _chaInput() {
@@ -252,7 +268,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                           await APIs.sendChatImage(
                               widget.user, File(image.path));
-                              setState(() => _isUploading = false);
+                          setState(() => _isUploading = false);
                         }
                       },
                       icon: const Icon(Icons.camera_alt_rounded,

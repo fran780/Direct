@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:direct/api/apis.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:direct/widgets/chat_user_card.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
@@ -29,6 +32,19 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     APIs.getSelfInfo();
+    //Para ver si esta activo
+    APIs.updateActiveStatus(true);
+
+//los eventos de activo o inactivo
+    SystemChannels.lifecycle.setMessageHandler((message) {
+    log('Message: $message');
+      
+      if (message.toString().contains('resume'))APIs.updateActiveStatus(true);
+      if (message.toString().contains('pause'))APIs.updateActiveStatus(false);
+
+    return Future.value(message);
+
+    });
   }
 
   @override

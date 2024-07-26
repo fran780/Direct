@@ -5,7 +5,7 @@ import 'package:direct/models/chat_user.dart';
 import 'package:direct/models/message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+
 
 class APIs {
   //para autenticarse
@@ -77,6 +77,25 @@ class APIs {
     });
   }
 
+  //for getting specific user info
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
+    ChatUser chatUser)  {
+      return firestore
+        .collection(('users'))
+        .where('id', isEqualTo: chatUser.id)
+        .snapshots();
+    }
+
+    //Actulizacion de la ultima vez online
+    static Future<void> updateActiveStatus(bool isOnline)async {
+      firestore
+        .collection('users')
+        .doc(user.uid).update({'is_online' : isOnline, 
+        'last_active': DateTime.now().millisecondsSinceEpoch.toString()
+        });
+        
+    }
+
 // para actualizar foto de perfil de usuario
   static Future<void> updateProfilePicture(File file) async {
     final ext = file.path.split('.').last;
@@ -104,14 +123,14 @@ class APIs {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
       ChatUser user) {
     return firestore
-    
         .collection('chats/${getConversationID(user.id)}/messages/')
         .orderBy('sent', descending: true)
         .snapshots();
   }
 
   //para enviar mensajes
-  static Future<void> sendMessage(ChatUser chatUser, String msg, Type type) async {
+  static Future<void> sendMessage(
+      ChatUser chatUser, String msg, Type type) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
     final Message message = Message(
@@ -136,19 +155,19 @@ class APIs {
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
       ChatUser user) {
-        return firestore
+    return firestore
         .collection('chats/${getConversationID(user.id)}/messages/')
         .orderBy('sent', descending: true)
         .limit(1)
         .snapshots();
   }
 
-
-      //enviar imagenes en el chat 
-  static Future<void>sendChatImage(ChatUser chatUser, File file) async {
+  //enviar imagenes en el chat
+  static Future<void> sendChatImage(ChatUser chatUser, File file) async {
     final ext = file.path.split('.').last;
 
-    final ref = storage.ref().child('images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+    final ref = storage.ref().child(
+        'images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
 
     await ref
         .putFile(file, SettableMetadata(contentType: 'image/$ext'))
@@ -160,5 +179,3 @@ class APIs {
     await sendMessage(chatUser, imageUrl, Type.image);
   }
 }
-
-
