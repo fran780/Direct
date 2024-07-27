@@ -41,6 +41,8 @@ class APIs {
     });
   }
 
+  // for sending push notification (Updated Codes)
+
   static Future<void> sendPushNotification(
       ChatUser chatUser, String msg) async {
     AccessFirebaseToken accessToken = AccessFirebaseToken();
@@ -48,7 +50,9 @@ class APIs {
     final body = {
       "message": {
         "token": chatUser.pushToken,
-        "notification": {"title": me.name, "body": msg},
+        "notification": {
+          "title": me.name, 
+          "body": msg},
       }
     };
     try {
@@ -61,6 +65,7 @@ class APIs {
         },
         body: jsonEncode(body),
       );
+      
       print("Response statusCode: ${res.statusCode}");
       print("Response body: ${res.body}");
     } catch (e) {
@@ -162,6 +167,8 @@ class APIs {
 
   // *************** Chat Screen Related APIs *******************
 
+
+// useful for getting conversation id
   static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
       ? '${user.uid}_$id'
       : '${id}_${user.uid}';
@@ -190,7 +197,8 @@ class APIs {
 
     final ref = firestore
         .collection('chats/${getConversationID(chatUser.id)}/messages/');
-    await ref.doc(time).set(message.toJson());
+    await ref.doc(time).set(message.toJson()).then((value) =>
+        sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
   }
 
   static Future<void> updateMessageReadStatus(Message message) async {

@@ -36,7 +36,7 @@ dependencies:
   #para la migracion a legacy de Firebase
   googleapis_auth: ^1.4.1
   #metodo post
-  http: ^0.13.3
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
