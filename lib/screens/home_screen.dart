@@ -30,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     APIs.getSelfInfo();
-    //Para ver si esta activo
-    APIs.updateActiveStatus(true);
+
+    
 
 //los eventos de activo o inactivo
     SystemChannels.lifecycle.setMessageHandler((message) {

@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:direct/models/message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
 
 class APIs {
   //para autenticarse
@@ -23,6 +23,21 @@ class APIs {
   //Para devolver el usuario actual
   static User get user => auth.currentUser!;
 
+  //Para acceder a la base de datos NOTIFICACION
+  static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
+
+  //conseguir El TOKEN de los mensajes BASE DE DATOS
+  static Future<void> getFirebaseMessaginToken() async {
+    await fMessaging.requestPermission();
+
+    await fMessaging.getToken().then((t) {
+      if (t != null) {
+        me.pushToken = t;
+        print('Push Token: $t');
+      }
+    });
+  }
+
   //Verificar si el usuario existe o no
   static Future<bool> userExists() async {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
@@ -33,6 +48,9 @@ class APIs {
     await firestore.collection('users').doc(user.uid).get().then((user) async {
       if (user.exists) {
         me = ChatUser.fromJson(user.data()!);
+       await getFirebaseMessaginToken();
+        //Para ver si esta activo
+    APIs.updateActiveStatus(true);
         print('My Data: ${user.data()}');
       } else {
         await createUser().then((value) => getSelfInfo());
@@ -79,22 +97,21 @@ class APIs {
 
   //for getting specific user info
   static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
-    ChatUser chatUser)  {
-      return firestore
+      ChatUser chatUser) {
+    return firestore
         .collection(('users'))
         .where('id', isEqualTo: chatUser.id)
         .snapshots();
-    }
+  }
 
-    //Actulizacion de la ultima vez online
-    static Future<void> updateActiveStatus(bool isOnline)async {
-      firestore
-        .collection('users')
-        .doc(user.uid).update({'is_online' : isOnline, 
-        'last_active': DateTime.now().millisecondsSinceEpoch.toString()
-        });
-        
-    }
+  //Actulizacion de la ultima vez online
+  static Future<void> updateActiveStatus(bool isOnline) async {
+    firestore.collection('users').doc(user.uid).update({
+      'is_online': isOnline,
+      'last_active': DateTime.now().millisecondsSinceEpoch.toString(),
+      'push_token': me.pushToken,
+    });
+  }
 
 // para actualizar foto de perfil de usuario
   static Future<void> updateProfilePicture(File file) async {
