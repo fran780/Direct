@@ -46,7 +46,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(mq.height * .03),
                   child: CachedNetworkImage(
-                    width: mq.height * .055,
+                    width: mq.height * .055, 
                     height: mq.height * .055,
                     imageUrl: widget.user.image,
                     errorWidget: (context, url, error) =>

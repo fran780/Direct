@@ -1,8 +1,8 @@
 import 'dart:io';
 
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/helper/my_date_util.dart';
+import 'package:direct/screens/view_profile_screen.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 import 'package:direct/main.dart';
@@ -133,14 +133,20 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _appBar() {
     return InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => viewProfileScreen(
+                        user: widget.user,
+                      )));
+        },
         child: StreamBuilder(
             stream: APIs.getUserInfo(widget.user),
             builder: (context, snapshot) {
               final data = snapshot.data?.docs;
               final list =
                   data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
-            
 
               return Row(
                 children: [
@@ -158,7 +164,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: CachedNetworkImage(
                       width: mq.height * .05,
                       height: mq.height * .05,
-                      imageUrl: list.isNotEmpty ? list[0].image :widget.user.image,
+                      imageUrl:
+                          list.isNotEmpty ? list[0].image : widget.user.image,
                       errorWidget: (context, url, error) => const CircleAvatar(
                           child: Icon(CupertinoIcons.person)),
                     ),
@@ -171,7 +178,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text( list.isNotEmpty ? list[0].name : widget.user.name,
+                      Text(list.isNotEmpty ? list[0].name : widget.user.name,
                           style: const TextStyle(
                               fontSize: 16,
                               color: Colors.black87,
@@ -180,12 +187,17 @@ class _ChatScreenState extends State<ChatScreen> {
                       //para añadir un espacio
                       const SizedBox(height: 2),
 
-                       Text(list.isNotEmpty ? 
-                       list[0]. isOnline ? 'Online' :
-                       MyDateUtil.getLastActiveTime(context: context, lastActive: list[0].lastActive)
-                       : MyDateUtil.getLastActiveTime(context: context, lastActive: widget.user.lastActive),
-                          style: 
-                          const TextStyle(
+                      Text(
+                          list.isNotEmpty
+                              ? list[0].isOnline
+                                  ? 'Online'
+                                  : MyDateUtil.getLastActiveTime(
+                                      context: context,
+                                      lastActive: list[0].lastActive)
+                              : MyDateUtil.getLastActiveTime(
+                                  context: context,
+                                  lastActive: widget.user.lastActive),
+                          style: const TextStyle(
                               fontSize: 13,
                               color: Colors.black54,
                               fontWeight: FontWeight.w500)),

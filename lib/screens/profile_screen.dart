@@ -6,6 +6,8 @@ import 'package:direct/api/apis.dart';
 import 'package:direct/helper/dialogs.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:direct/screens/auth/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +47,8 @@ class _HomeScreenState extends State<ProfileScreen> {
                 //mostrar progresos de dialogo
                 Dialogs.showProgressBar(context);
 
+              await APIs.updateActiveStatus(false);
+
                 //salir de la app
                 await APIs.auth.signOut().then((value) async {
                   await GoogleSignIn().signOut().then((value) {
@@ -53,6 +57,7 @@ class _HomeScreenState extends State<ProfileScreen> {
 
                     //para volver a la pantalla de inicio
                     Navigator.pop(context);
+                    APIs.auth = FirebaseAuth.instance;
 
                     //reemplazando la pantalla de inicio con la pantalla de inicio de sesión
                     Navigator.pushReplacement(context,

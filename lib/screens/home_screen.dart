@@ -1,5 +1,3 @@
-
-
 import 'package:direct/api/apis.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:direct/widgets/chat_user_card.dart';
@@ -37,13 +35,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
 //los eventos de activo o inactivo
     SystemChannels.lifecycle.setMessageHandler((message) {
-    print('Message: $message');
-      
-      if (message.toString().contains('resume'))APIs.updateActiveStatus(true);
-      if (message.toString().contains('pause'))APIs.updateActiveStatus(false);
+      print('Message: $message');
 
-    return Future.value(message);
+      if (APIs.auth.currentUser != null) {
+        if (message.toString().contains('resume')) {
+          APIs.updateActiveStatus(true);
+        }
+        if (message.toString().contains('pause'))
+          APIs.updateActiveStatus(false);
+      }
 
+      return Future.value(message);
     });
   }
 
