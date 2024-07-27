@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,22 +37,66 @@ class APIs {
     await fMessaging.getToken().then((t) {
       if (t != null) {
         me.pushToken = t;
-        print('Push Token: $t');
+        log('Push Token: $t');
       }
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
+      log('Got a message whilst in the foreground!');
+      log('Message data: ${message.data}');
 
       if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
+        log('Message also contained a notification: ${message.notification}');
       }
     });
   }
 
   // for sending push notification (Updated Codes)
 
+  //opcion actualizada
+  /*static Future<void> sendPushNotification(
+      ChatUser chatUser, String msg) async {
+    try {
+      final body = {
+        "message": {
+          "token": chatUser.pushToken,
+          "notification": {
+            "title": me.name, //our name should be send
+            "body": msg,
+          },
+        }
+      };
+
+      // Firebase Project > Project Settings > General Tab > Project ID
+      const projectID = 'direct-8ed55';
+
+      // get firebase admin token
+     AccessFirebaseToken accessToken = AccessFirebaseToken();
+     String bearerToken = await accessToken.getAccessToken();
+
+      log('bearerToken: $bearerToken');
+
+      // handle null token
+      if (bearerToken == null) return;
+
+      var res = await post(
+        Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/$projectID/messages:send'),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Bearer $bearerToken'
+        },
+        body: jsonEncode(body),
+      );
+
+      log('Response status: ${res.statusCode}');
+      log('Response body: ${res.body}');
+    } catch (e) {
+      log('\nsendPushNotificationE: $e');
+    }
+  }*/
+
+  //opcion video
   static Future<void> sendPushNotification(
       ChatUser chatUser, String msg) async {
     AccessFirebaseToken accessToken = AccessFirebaseToken();
@@ -62,7 +107,6 @@ class APIs {
         "notification": {
           "title": me.name,
           "body": msg,
-          "android_channel_id": "chats"
         },
         "data": {
           "some_data ": "User ID : ${me.id}",
@@ -81,10 +125,10 @@ class APIs {
         body: jsonEncode(body),
       );
 
-      print("Response statusCode: ${res.statusCode}");
-      print("Response body: ${res.body}");
+      ("Response statusCode: ${res.statusCode}");
+      log("Response body: ${res.body}");
     } catch (e) {
-      print("\nsendPushNotification: $e");
+      log("\nsendPushNotification: $e");
     }
   }
 
