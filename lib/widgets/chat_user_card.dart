@@ -4,6 +4,7 @@ import 'package:direct/helper/my_date_util.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:direct/models/message.dart';
 import 'package:direct/screens/chat_screen.dart';
+import 'package:direct/widgets/dialogs/profile_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
@@ -43,14 +44,23 @@ class _ChatUserCardState extends State<ChatUserCard> {
               if (list.isNotEmpty) _message = list[0];
 
               return ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(mq.height * .03),
-                  child: CachedNetworkImage(
-                    width: mq.height * .055, 
-                    height: mq.height * .055,
-                    imageUrl: widget.user.image,
-                    errorWidget: (context, url, error) =>
-                        const CircleAvatar(child: Icon(CupertinoIcons.person)),
+                leading: InkWell(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => ProfileDialog(
+                              user: widget.user,
+                            ));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .03),
+                    child: CachedNetworkImage(
+                      width: mq.height * .055,
+                      height: mq.height * .055,
+                      imageUrl: widget.user.image,
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                          child: Icon(CupertinoIcons.person)),
+                    ),
                   ),
                 ),
 
