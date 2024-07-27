@@ -37,6 +37,8 @@ dependencies:
   googleapis_auth: ^1.4.1
   #metodo post
   http: ^1.2.2
+  #crear las notifcaciones de canal
+  flutter_notification_channel: ^3.1.0
 
 dev_dependencies:
   flutter_test:

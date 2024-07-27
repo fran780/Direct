@@ -39,6 +39,15 @@ class APIs {
         print('Push Token: $t');
       }
     });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
   }
 
   // for sending push notification (Updated Codes)
@@ -51,10 +60,16 @@ class APIs {
       "message": {
         "token": chatUser.pushToken,
         "notification": {
-          "title": me.name, 
-          "body": msg},
+          "title": me.name,
+          "body": msg,
+          "android_channel_id": "chats"
+        },
+        "data": {
+          "some_data ": "User ID : ${me.id}",
+        },
       }
     };
+
     try {
       var res = await post(
         Uri.parse(
@@ -65,7 +80,7 @@ class APIs {
         },
         body: jsonEncode(body),
       );
-      
+
       print("Response statusCode: ${res.statusCode}");
       print("Response body: ${res.body}");
     } catch (e) {
@@ -166,7 +181,6 @@ class APIs {
   }
 
   // *************** Chat Screen Related APIs *******************
-
 
 // useful for getting conversation id
   static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
