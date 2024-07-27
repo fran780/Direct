@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:direct/api/access_firebase_token.dart';
 import 'package:direct/models/chat_user.dart';
 import 'package:direct/models/message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:http/http.dart';
 
 class APIs {
   //para autenticarse
@@ -38,6 +41,33 @@ class APIs {
     });
   }
 
+  static Future<void> sendPushNotification(
+      ChatUser chatUser, String msg) async {
+    AccessFirebaseToken accessToken = AccessFirebaseToken();
+    String bearerToken = await accessToken.getAccessToken();
+    final body = {
+      "message": {
+        "token": chatUser.pushToken,
+        "notification": {"title": me.name, "body": msg},
+      }
+    };
+    try {
+      var res = await post(
+        Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/direct-8ed55/messages:send'),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $bearerToken'
+        },
+        body: jsonEncode(body),
+      );
+      print("Response statusCode: ${res.statusCode}");
+      print("Response body: ${res.body}");
+    } catch (e) {
+      print("\nsendPushNotification: $e");
+    }
+  }
+
   //Verificar si el usuario existe o no
   static Future<bool> userExists() async {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
@@ -48,9 +78,9 @@ class APIs {
     await firestore.collection('users').doc(user.uid).get().then((user) async {
       if (user.exists) {
         me = ChatUser.fromJson(user.data()!);
-       await getFirebaseMessaginToken();
+        await getFirebaseMessaginToken();
         //Para ver si esta activo
-    APIs.updateActiveStatus(true);
+        APIs.updateActiveStatus(true);
         print('My Data: ${user.data()}');
       } else {
         await createUser().then((value) => getSelfInfo());
