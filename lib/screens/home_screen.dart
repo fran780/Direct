@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           body: StreamBuilder(
-            stream: APIs.getAllUsers(),
+            stream: APIs.getMyUsersid(),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 //si los datos estan cargando
@@ -137,30 +137,49 @@ class _HomeScreenState extends State<HomeScreen> {
                 //Si algunos o todos los datos están cargados, muéstrelos.
                 case ConnectionState.active:
                 case ConnectionState.done:
-                  final data = snapshot.data?.docs;
-                  _list =
-                      data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
-                          [];
+                  return StreamBuilder(
+                    stream: APIs.getAllUsers(
+                        snapshot.data?.docs.map((e) => e.id).toList() ?? []),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        //si los datos estan cargando
+                        case ConnectionState.waiting:
+                        case ConnectionState.none:
+                          //return const Center(
+                             // child: CircularProgressIndicator());
 
-                  if (_list.isNotEmpty) {
-                    return ListView.builder(
-                        itemCount:
-                            _isSearching ? _searchList.length : _list.length,
-                        padding: EdgeInsets.only(top: mq.height * .01),
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return ChatUserCard(
-                              user: _isSearching
-                                  ? _searchList[index]
-                                  : _list[index]);
-                          //return Text('Name: ${list[index]}');
-                        });
-                  } else {
-                    return const Center(
-                      child: Text('No se encontro conexión',
-                          style: TextStyle(fontSize: 20)),
-                    );
-                  }
+                        //Si algunos o todos los datos están cargados, muéstrelos.
+                        case ConnectionState.active:
+                        case ConnectionState.done:
+                          final data = snapshot.data?.docs;
+                          _list = data
+                                  ?.map((e) => ChatUser.fromJson(e.data()))
+                                  .toList() ??
+                              [];
+
+                          if (_list.isNotEmpty) {
+                            return ListView.builder(
+                                itemCount: _isSearching
+                                    ? _searchList.length
+                                    : _list.length,
+                                padding: EdgeInsets.only(top: mq.height * .01),
+                                physics: BouncingScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return ChatUserCard(
+                                      user: _isSearching
+                                          ? _searchList[index]
+                                          : _list[index]);
+                                  //return Text('Name: ${list[index]}');
+                                });
+                          } else {
+                            return const Center(
+                              child: Text('No se encontro conexión',
+                                  style: TextStyle(fontSize: 20)),
+                            );
+                          }
+                      }
+                    },
+                  );
               }
             },
           ),
@@ -228,12 +247,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       //hide alert dialog
                       Navigator.pop(context);
                       if (email.isNotEmpty) {
-                      await APIs.addChatUser(email).then((value){
-                        if(!value){
-                          Dialogs.showSnackbar(context, 'User does not Exists');
-                        }
-
-                      });
+                        await APIs.addChatUser(email).then((value) {
+                          if (!value) {
+                            Dialogs.showSnackbar(
+                                context, 'User does not Exists');
+                          }
+                        });
                       }
                     },
                     child: const Text(

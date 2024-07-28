@@ -143,7 +143,7 @@ class APIs {
         .where('email', isEqualTo: email)
         .get();
 
-        log('data : ${data.docs}');
+    log('data : ${data.docs}');
 
     if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
       //usuario existe
@@ -200,17 +200,40 @@ class APIs {
         .set(chatUser.toJson());
   }
 
-  //para obtener todos los usuarios de la base de datos
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMyUsersid() {
     return firestore
         .collection(('users'))
-        .where('id', isNotEqualTo: user.uid)
+        .doc(user.uid)
+        .collection('my_users')
         .snapshots();
+  }
+
+  //para obtener todos los usuarios de la base de datos
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
+      List<String> userIds) {
+    log('\nUserIds $userIds');
+
+    return firestore
+        .collection(('users'))
+        .where('id', whereIn: userIds)
+        //.where('id', isNotEqualTo: user.uid)
+        .snapshots();
+  }
+
+///////////////////////
+  static Future<void> sendFirstMessage(
+      ChatUser chatUser, String msg, Type type) async {
+    await firestore
+        .collection('users')
+        .doc(chatUser.id)
+        .collection('my_users')
+        .doc(user.uid)
+        .set({}).then((value) => sendMessage(chatUser, msg, type));
   }
 
 // para actualizar la informacion del usuario
   static Future<void> updateUserInfo() async {
-    return await firestore.collection('users').doc(user.uid).update({
+    await firestore.collection('users').doc(user.uid).update({
       'name': me.name,
       'about': me.about,
     });
@@ -270,6 +293,7 @@ class APIs {
   //para enviar mensajes
   static Future<void> sendMessage(
       ChatUser chatUser, String msg, Type type) async {
+    //
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
     final Message message = Message(
