@@ -212,7 +212,7 @@ class _HomeScreenState extends State<ProfileScreen> {
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(20))),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (_) {
           return ListView(
             shrinkWrap: true,
@@ -280,4 +280,6 @@ class _HomeScreenState extends State<ProfileScreen> {
           );
         });
   }
+
+
 }

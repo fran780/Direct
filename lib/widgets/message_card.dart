@@ -18,9 +18,12 @@ class MessageCard extends StatefulWidget {
 class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
-    return APIs.user.uid == widget.message.fromld
-        ? _greenMessage()
-        : _blueMessage();
+    bool isMe = APIs.user.uid == widget.message.fromld;
+    return InkWell(
+        onLongPress: () {
+          _showBottomSheet(isMe);
+        },
+        child: isMe ? _greenMessage() : _blueMessage());
   }
 
   // Mensaje azul para usuario
@@ -48,13 +51,13 @@ class _MessageCardState extends State<MessageCard> {
                     topRight: Radius.circular(30),
                     bottomRight: Radius.circular(30))),
             child: widget.message.type == Type.text
-                ? 
+                ?
                 //Show text
                 Text(
                     widget.message.msg,
                     style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
-                : 
+                :
                 //show image
                 ClipRRect(
                     borderRadius: BorderRadius.circular(15),
@@ -129,7 +132,7 @@ class _MessageCardState extends State<MessageCard> {
                     topRight: Radius.circular(30),
                     bottomLeft: Radius.circular(30))),
             child: widget.message.type == Type.text
-                ? 
+                ?
                 //show text
                 Text(
                     widget.message.msg,
@@ -154,5 +157,114 @@ class _MessageCardState extends State<MessageCard> {
         ),
       ],
     );
+  }
+
+  // Boton para que el usuario elija foto de usuario
+  void _showBottomSheet(bool isMe) {
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            children: [
+              Container(
+                  height: 4,
+                  margin: EdgeInsets.symmetric(
+                      vertical: mq.height * .015, horizontal: mq.width * .4),
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(8))),
+
+              //boton de copiar
+              widget.message.type == Type.text
+                  ? 
+                  _OptionItem(
+                      icon: const Icon(Icons.copy_all_rounded,
+                          color: Colors.blue, size: 26),
+                      name: 'Copiar Texto',
+                      onTap: () {})
+                  : _OptionItem(
+                      icon: const Icon(Icons.download_rounded,
+                          color: Colors.blue, size: 26),
+                      name: 'Guardar imagen',
+                      onTap: () {}),
+
+              if(isMe)
+              Divider(
+                color: Colors.black54,
+                endIndent: mq.width * .04,
+                indent: mq.width * .04,
+              ),
+
+              //boton de editar
+              if(widget.message.type == Type.text && isMe)
+              _OptionItem(
+                  icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
+                  name: 'Editar mensaje',
+                  onTap: () {}),
+
+              //boton de eliminar
+              if(isMe)
+              _OptionItem(
+                  icon: const Icon(Icons.delete_forever,
+                      color: Colors.red, size: 26),
+                  name: 'Borrar mensaje',
+                  onTap: () {}),
+
+              Divider(
+                color: Colors.black54,
+                endIndent: mq.width * .04,
+                indent: mq.width * .04,
+              ),
+
+              //tiempo de mensaje enviado
+              _OptionItem(
+                  icon: const Icon(Icons.remove_red_eye,
+                      color: Colors.blue, size: 26),
+                  name: 'Enviado a las:',
+                  onTap: () {}),
+
+              //tiempo de leido
+              _OptionItem(
+                  icon: const Icon(Icons.remove_red_eye,
+                      color: Colors.green, size: 26),
+                  name: 'Leido a las:',
+                  onTap: () {}),
+            ],
+          );
+        });
+  }
+}
+
+class _OptionItem extends StatelessWidget {
+  final Icon icon;
+  final String name;
+  final VoidCallback onTap;
+
+  const _OptionItem(
+      {required this.icon, required this.name, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: () => onTap(),
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: mq.width * .05,
+              top: mq.height * .015,
+              bottom: mq.height * .02),
+          child: Row(children: [
+            icon,
+            Flexible(
+                child: Text(
+              '    $name',
+              style: const TextStyle(
+                  fontSize: 15, color: Colors.black54, letterSpacing: 0.5),
+            ))
+          ]),
+        ));
   }
 }

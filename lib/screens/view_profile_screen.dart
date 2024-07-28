@@ -88,7 +88,7 @@ class _HomeScreenState extends State<viewProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'About:',
+                        'About: ',
                         style: TextStyle(
                             color: Colors.black87,
                             fontWeight: FontWeight.w500,
