@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/api/apis.dart';
+import 'package:direct/helper/dialogs.dart';
 import 'package:direct/helper/my_date_util.dart';
 import 'package:direct/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/message.dart';
 
@@ -180,39 +182,52 @@ class _MessageCardState extends State<MessageCard> {
 
               //boton de copiar
               widget.message.type == Type.text
-                  ? 
-                  _OptionItem(
+                  ? _OptionItem(
                       icon: const Icon(Icons.copy_all_rounded,
                           color: Colors.blue, size: 26),
                       name: 'Copiar Texto',
-                      onTap: () {})
+                      onTap: () async {
+                        await Clipboard.setData(
+                                ClipboardData(text: widget.message.msg))
+                            .then((value) {
+                          Navigator.pop(context);
+
+                          Dialogs.showSnackbar(context, 'Texto copiado');
+                        });
+                      })
+
+                      // descargar o guardar imagen
                   : _OptionItem(
                       icon: const Icon(Icons.download_rounded,
                           color: Colors.blue, size: 26),
                       name: 'Guardar imagen',
                       onTap: () {}),
 
-              if(isMe)
-              Divider(
-                color: Colors.black54,
-                endIndent: mq.width * .04,
-                indent: mq.width * .04,
-              ),
+              if (isMe)
+                Divider(
+                  color: Colors.black54,
+                  endIndent: mq.width * .04,
+                  indent: mq.width * .04,
+                ),
 
               //boton de editar
-              if(widget.message.type == Type.text && isMe)
-              _OptionItem(
-                  icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
-                  name: 'Editar mensaje',
-                  onTap: () {}),
+              if (widget.message.type == Type.text && isMe)
+                _OptionItem(
+                    icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
+                    name: 'Editar mensaje',
+                    onTap: () {}),
 
               //boton de eliminar
-              if(isMe)
-              _OptionItem(
-                  icon: const Icon(Icons.delete_forever,
-                      color: Colors.red, size: 26),
-                  name: 'Borrar mensaje',
-                  onTap: () {}),
+              if (isMe)
+                _OptionItem(
+                    icon: const Icon(Icons.delete_forever,
+                        color: Colors.red, size: 26),
+                    name: 'Borrar mensaje',
+                    onTap: () async {
+                      await APIs.deleteMessage(widget.message).then((value) {
+                        Navigator.pop(context);
+                      });
+                    }),
 
               Divider(
                 color: Colors.black54,
@@ -224,14 +239,17 @@ class _MessageCardState extends State<MessageCard> {
               _OptionItem(
                   icon: const Icon(Icons.remove_red_eye,
                       color: Colors.blue, size: 26),
-                  name: 'Enviado a las:',
+                  name:
+                      'Enviado: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                   onTap: () {}),
 
               //tiempo de leido
               _OptionItem(
                   icon: const Icon(Icons.remove_red_eye,
                       color: Colors.green, size: 26),
-                  name: 'Leido a las:',
+                  name: widget.message.read.isEmpty
+                      ? 'Leido: No ha sido leido'
+                      : 'Leido: ${MyDateUtil.getMessageTime(context: context, time: widget.message.read)}',
                   onTap: () {}),
             ],
           );
