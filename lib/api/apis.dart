@@ -137,6 +137,33 @@ class APIs {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
   }
 
+  static Future<bool> addChatUser(String email) async {
+    final data = await firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+        log('data : ${data.docs}');
+
+    if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
+      //usuario existe
+
+      print('user exists: ${data.docs.first.data()}');
+
+      firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('my_users')
+          .doc(data.docs.first.id)
+          .set({});
+
+      return true;
+    } else {
+      //usuario no exite
+      return false;
+    }
+  }
+
   //Para obtner informacion actual del usuario
   static Future<void> getSelfInfo() async {
     await firestore.collection('users').doc(user.uid).get().then((user) async {
@@ -299,17 +326,16 @@ class APIs {
         .doc(message.sent)
         .delete();
 
-      if(message.type == Type.image) {
-        await storage.refFromURL(message.msg).delete();
-      }
+    if (message.type == Type.image) {
+      await storage.refFromURL(message.msg).delete();
+    }
   }
 
 //actualizar mensaje
-  static Future<void> updateMessage(Message message, String updateMsg ) async {
+  static Future<void> updateMessage(Message message, String updateMsg) async {
     await firestore
         .collection('chats/${getConversationID(message.told)}/messages/')
         .doc(message.sent)
         .update({'msg': updateMsg});
-
   }
 }
