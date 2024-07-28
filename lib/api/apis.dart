@@ -303,4 +303,13 @@ class APIs {
         await storage.refFromURL(message.msg).delete();
       }
   }
+
+//actualizar mensaje
+  static Future<void> updateMessage(Message message, String updateMsg ) async {
+    await firestore
+        .collection('chats/${getConversationID(message.told)}/messages/')
+        .doc(message.sent)
+        .update({'msg': updateMsg});
+
+  }
 }

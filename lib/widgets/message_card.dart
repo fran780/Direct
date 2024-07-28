@@ -233,7 +233,12 @@ class _MessageCardState extends State<MessageCard> {
                 _OptionItem(
                     icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
                     name: 'Editar mensaje',
-                    onTap: () {}),
+                    onTap: () {
+                      //
+                      Navigator.pop(context);
+
+                      _showMessageUpdateDialog();
+                    }),
 
               //boton de eliminar
               if (isMe)
@@ -243,6 +248,7 @@ class _MessageCardState extends State<MessageCard> {
                     name: 'Borrar mensaje',
                     onTap: () async {
                       await APIs.deleteMessage(widget.message).then((value) {
+                        //
                         Navigator.pop(context);
                       });
                     }),
@@ -272,6 +278,71 @@ class _MessageCardState extends State<MessageCard> {
             ],
           );
         });
+  }
+
+//dialog for updating message content
+  void _showMessageUpdateDialog() {
+    String updatemsg = widget.message.msg;
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+
+                contentPadding: const EdgeInsets.only(
+                  left: 24, right: 24, top: 20, bottom: 10),
+
+                //titulo
+                title: Row(
+                  children: const [
+                    Icon(
+                      Icons.message,
+                      color: Colors.blue,
+                      size: 28,
+                    ),
+                    Text(' Mensaje actualizado')
+                  ],
+                ),
+
+                //contenido
+
+                content: TextFormField(
+                  initialValue: updatemsg,
+                  maxLines: null,
+                  onChanged: (value) => updatemsg = value,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15))),
+                ),
+
+                //actions
+                actions: [
+                  //cancel button
+                  MaterialButton(
+                      onPressed: () {
+                        //hide alert dialog
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Cancelar',
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      )),
+
+                  //update button
+                  MaterialButton(
+                      onPressed: () {
+                        //hide alert dialog
+                        Navigator.pop(context);
+                        APIs.updateMessage(widget.message, updatemsg);
+                      },
+                      child: const Text(
+                        'Update',
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      ))
+                ],
+                
+                ));
   }
 }
 
