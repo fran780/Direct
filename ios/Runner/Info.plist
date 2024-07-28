@@ -60,8 +60,13 @@
 </array>
 </dict>
 
+
 <key>NSPhotoLibraryUsageDescription</key>
 <string>App requires access to the photo library for picking pictures.</string>
 <key>NSCameraUsageDescription</key>
 <string>App requires access to the camera for taking pictures.</string>
+
+<key>NSPhotoLibraryAddUsageDescription<key>
+<string>This app requires read an write access to the photo library.<string>
+
 </plist>

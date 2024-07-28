@@ -39,6 +39,8 @@ dependencies:
   http: ^1.2.2
   #crear las notifcaciones de canal
   flutter_notification_channel: ^3.1.0
+  #sirve para guardar imagenes
+  gallery_saver_updated: ^3.0.0
 
 dev_dependencies:
   flutter_test:

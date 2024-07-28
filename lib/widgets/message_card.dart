@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/api/apis.dart';
 import 'package:direct/helper/dialogs.dart';
@@ -5,6 +7,7 @@ import 'package:direct/helper/my_date_util.dart';
 import 'package:direct/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gallery_saver_updated/gallery_saver.dart';
 
 import '../models/message.dart';
 
@@ -196,12 +199,27 @@ class _MessageCardState extends State<MessageCard> {
                         });
                       })
 
-                      // descargar o guardar imagen
+                  // descargar o guardar imagen
                   : _OptionItem(
                       icon: const Icon(Icons.download_rounded,
                           color: Colors.blue, size: 26),
                       name: 'Guardar imagen',
-                      onTap: () {}),
+                      onTap: () async {
+                        try {
+                          print('Image Url: ${widget.message.msg}');
+                          await GallerySaver.saveImage(widget.message.msg,
+                                  albumName: 'Direct')
+                              .then((success) {
+                            Navigator.pop(context);
+                            if (success != null && success) {
+                              Dialogs.showSnackbar(
+                                  context, 'Imagen guardada correctamente');
+                            }
+                          });
+                        } catch (e) {
+                          print('Error al guardar la imagen: $e');
+                        }
+                      }),
 
               if (isMe)
                 Divider(
