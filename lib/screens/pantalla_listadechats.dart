@@ -1,24 +1,23 @@
 import 'package:direct/api/apis.dart';
 import 'package:direct/helper/dialogs.dart';
-import 'package:direct/models/chat_user.dart';
-import 'package:direct/widgets/chat_user_card.dart';
+import 'package:direct/models/usuarios_chat.dart';
+import 'package:direct/widgets/tarjeta_usuariochat.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
-import 'profile_screen.dart';
+import 'pantalla_perfil.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class Pantalla_listadechats extends StatefulWidget {
+  const Pantalla_listadechats({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<Pantalla_listadechats> createState() => _Pantalla_listadechatsState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _Pantalla_listadechatsState extends State<Pantalla_listadechats> {
   //para almacenar usuarios
   List<ChatUser> _list = [];
 
@@ -53,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       //para ocultar el teclado cuando se detecta un toque en la pantalla
       onTap: () => FocusScope.of(context).unfocus(),
-      // ignore: deprecated_member_use
+
       child: WillPopScope(
         // Si la búsqueda está activada y se presiona el botón Atrás, cierre la búsqueda
         // o simplemente cerrar la pantalla actual con el botón Atrás
@@ -110,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => ProfileScreen(user: APIs.me)));
+                            builder: (_) => Pantalla_perfil(user: APIs.me)));
                   },
                   icon: const Icon(Icons.more_vert))
             ],
@@ -145,8 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         //si los datos estan cargando
                         case ConnectionState.waiting:
                         case ConnectionState.none:
-                          //return const Center(
-                             // child: CircularProgressIndicator());
 
                         //Si algunos o todos los datos están cargados, muéstrelos.
                         case ConnectionState.active:
@@ -165,15 +162,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: EdgeInsets.only(top: mq.height * .01),
                                 physics: BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
-                                  return ChatUserCard(
+                                  return Tarejeta_usuariochat(
                                       user: _isSearching
                                           ? _searchList[index]
                                           : _list[index]);
-                                  //return Text('Name: ${list[index]}');
                                 });
                           } else {
                             return const Center(
-                              child: Text('No se encontro conexión',
+                              child: Text('Agregue usuarios para conversar',
                                   style: TextStyle(fontSize: 20)),
                             );
                           }
@@ -213,13 +209,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
 
-              //contenido
-
               content: TextFormField(
                 maxLines: null,
                 onChanged: (value) => email = value,
                 decoration: InputDecoration(
-                    hintText: 'Email Id',
+                    hintText: 'Correo: ',
                     prefixIcon: const Icon(
                       Icons.email,
                       color: Colors.blue,
@@ -228,12 +222,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(15))),
               ),
 
-              //actions
               actions: [
-                //cancel button
                 MaterialButton(
                     onPressed: () {
-                      //hide alert dialog
                       Navigator.pop(context);
                     },
                     child: const Text(
@@ -241,10 +232,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(color: Colors.blue, fontSize: 16),
                     )),
 
-                //add button
                 MaterialButton(
                     onPressed: () async {
-                      //hide alert dialog
                       Navigator.pop(context);
                       if (email.isNotEmpty) {
                         await APIs.addChatUser(email).then((value) {
@@ -256,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     },
                     child: const Text(
-                      'Add',
+                      'Añadir',
                       style: TextStyle(color: Colors.blue, fontSize: 16),
                     ))
               ],

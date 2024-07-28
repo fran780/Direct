@@ -1,29 +1,29 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:direct/helper/my_date_util.dart';
-import 'package:direct/screens/view_profile_screen.dart';
+import 'package:direct/helper/conf_tiempo.dart';
+import 'package:direct/screens/pantalla_verperfil.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 import 'package:direct/main.dart';
-import 'package:direct/models/chat_user.dart';
-import 'package:direct/models/message.dart';
-import 'package:direct/widgets/message_card.dart';
+import 'package:direct/models/usuarios_chat.dart';
+import 'package:direct/models/mensaje.dart';
+import 'package:direct/widgets/tarjeta_mensaje.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../api/apis.dart';
 
-class ChatScreen extends StatefulWidget {
+class Pantalla_chats extends StatefulWidget {
   final ChatUser user;
-  const ChatScreen({super.key, required this.user});
+  const Pantalla_chats({super.key, required this.user});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  State<Pantalla_chats> createState() => _Pantalla_chatsState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _Pantalla_chatsState extends State<Pantalla_chats> {
   // para almacenar todos los mensajes
   List<Message> _list = [];
 
@@ -55,7 +55,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
             backgroundColor: Color.fromARGB(255, 241, 250, 249),
 
-            //body
             body: Column(
               children: [
                 Expanded(
@@ -85,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 padding: EdgeInsets.only(top: mq.height * .01),
                                 physics: BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
-                                  return MessageCard(message: _list[index]);
+                                  return Tarjeta_mensaje(message: _list[index]);
                                 });
                           } else {
                             return const Center(
@@ -107,15 +106,14 @@ class _ChatScreenState extends State<ChatScreen> {
                               EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                           child: CircularProgressIndicator(strokeWidth: 2))),
 
-                //
                 _chaInput(),
-                //
+
                 if (_showEmoji)
                   SizedBox(
                     height: mq.height * .30,
                     child: EmojiPicker(
                       textEditingController:
-                          _textController, // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]
+                          _textController,
                       config: Config(
                         bgColor: const Color.fromARGB(255, 234, 248, 255),
                         columns: 7,
@@ -137,7 +135,7 @@ class _ChatScreenState extends State<ChatScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (_) => viewProfileScreen(
+                  builder: (_) => Pantalla_verperfil(
                         user: widget.user,
                       )));
         },
@@ -190,7 +188,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       Text(
                           list.isNotEmpty
                               ? list[0].isOnline
-                                  ? 'Online'
+                                  ? 'En línea'
                                   : MyDateUtil.getLastActiveTime(
                                       context: context,
                                       lastActive: list[0].lastActive)
@@ -249,10 +247,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
 
-                        // Picking multiple image.
+                        // Seleccionar múltiples imágenes
                         final List<XFile> images =
                             await picker.pickMultiImage(imageQuality: 70);
-                        //uploading and sending image una por una
+                        //subir y enviar imagen una por una
                         for (var i in images) {
                           print('Image Path: ${i.path}');
                           setState(() => _isUploading = true);
@@ -271,7 +269,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
 
-                        // Pick an image.
                         final XFile? image = await picker.pickImage(
                             source: ImageSource.camera, imageQuality: 70);
                         if (image != null) {
@@ -298,7 +295,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () {
               if (_textController.text.isNotEmpty) {
                 if(_list.isEmpty){
-                  ///////////
+
                   APIs.sendFirstMessage(widget.user, _textController.text, Type.text);
 
                 }else {

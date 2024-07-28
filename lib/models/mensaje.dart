@@ -35,5 +35,5 @@ class Message {
     return data;
   }
 }
-enum Type{ text, image}
 
+enum Type { text, image }

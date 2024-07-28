@@ -1,32 +1,23 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:direct/api/apis.dart';
-import 'package:direct/helper/dialogs.dart';
-import 'package:direct/helper/my_date_util.dart';
-import 'package:direct/models/chat_user.dart';
-import 'package:direct/screens/auth/login_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:direct/helper/conf_tiempo.dart';
+import 'package:direct/models/usuarios_chat.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../main.dart';
 
 //pantalla para ver la informacion del usuario
-class viewProfileScreen extends StatefulWidget {
+class Pantalla_verperfil extends StatefulWidget {
   final ChatUser user;
 
-  const viewProfileScreen({super.key, required this.user});
+  const Pantalla_verperfil({super.key, required this.user});
 
   @override
-  State<viewProfileScreen> createState() => _HomeScreenState();
+  State<Pantalla_verperfil> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<viewProfileScreen> {
+class _HomeScreenState extends State<Pantalla_verperfil> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -41,7 +32,7 @@ class _HomeScreenState extends State<viewProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Joined On:',
+                        'Se unió: ',
                         style: TextStyle(
                             color: Colors.black87,
                             fontWeight: FontWeight.w500,
@@ -88,7 +79,7 @@ class _HomeScreenState extends State<viewProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'About: ',
+                        'Información: ',
                         style: TextStyle(
                             color: Colors.black87,
                             fontWeight: FontWeight.w500,

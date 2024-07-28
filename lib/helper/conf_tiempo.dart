@@ -46,13 +46,13 @@ class MyDateUtil {
         : '${sent.day} ${_getMonth(sent)}';
   }
 
-  //get formatted last active time of user in chat screen
+  //formato última hora activa de la usuario en la pantalla de chat
   static String getLastActiveTime(
       {required BuildContext context, required String lastActive}) {
     final int i = int.tryParse(lastActive) ?? -1;
 
-    //if time is not available then return below statement
-    if (i == -1) return 'Last seen not available';
+    //Si el tiempo no está disponible, devuelva la siguiente declaración
+    if (i == -1) return 'Última vez no disponible';
 
     DateTime time = DateTime.fromMillisecondsSinceEpoch(i);
     DateTime now = DateTime.now();
@@ -61,45 +61,45 @@ class MyDateUtil {
     if (time.day == now.day &&
         time.month == now.month &&
         time.year == time.year) {
-      return 'Last seen today at $formattedTime';
+      return 'Ultima vez hoy a las $formattedTime';
     }
 
     if ((now.difference(time).inHours / 24).round() == 1) {
-      return 'Last seen yesterday at $formattedTime';
+      return 'Ultima vez ayer a las $formattedTime';
     }
 
     String month = _getMonth(time);
 
-    return 'Last seen on ${time.day} $month on $formattedTime';
+    return 'Última vez el ${time.day} $month a las $formattedTime';
   }
 
   // para obtener el nombre del mes del envio del mensaje
   static String _getMonth(DateTime date) {
     switch (date.month) {
       case 1:
-        return 'Jan';
+        return 'Ene';
       case 2:
         return 'Feb';
       case 3:
-        return 'Mar';
+        return 'Marzo';
       case 4:
-        return 'Apr';
+        return 'Abril';
       case 5:
-        return 'May';
+        return 'Mayo';
       case 6:
-        return 'Jun';
+        return 'Junio';
       case 7:
-        return 'Jul';
+        return 'Julio';
       case 8:
-        return 'Aug';
+        return 'Ago';
       case 9:
-        return 'Sept';
+        return 'Sep';
       case 10:
         return 'Oct';
       case 11:
         return 'Nov';
       case 12:
-        return 'Dec';
+        return 'Dic';
     }
     return 'NA';
   }

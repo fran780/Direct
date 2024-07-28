@@ -4,33 +4,26 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:direct/api/access_firebase_token.dart';
-import 'package:direct/models/chat_user.dart';
-import 'package:direct/models/message.dart';
+import 'package:direct/models/usuarios_chat.dart';
+import 'package:direct/models/mensaje.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
 
 class APIs {
-  //para autenticarse
   static FirebaseAuth auth = FirebaseAuth.instance;
 
-  //para tener acceso a la base de datos de firestore
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  //para tener acceso a firebase storage
   static FirebaseStorage storage = FirebaseStorage.instance;
 
-  //para almacenar informacion personal
   static late ChatUser me;
 
-  //Para devolver el usuario actual
   static User get user => auth.currentUser!;
 
-  //Para acceder a la base de datos NOTIFICACION
   static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
 
-  //conseguir El TOKEN de los mensajes BASE DE DATOS
   static Future<void> getFirebaseMessaginToken() async {
     await fMessaging.requestPermission();
 
@@ -51,52 +44,6 @@ class APIs {
     });
   }
 
-  // for sending push notification (Updated Codes)
-
-  //opcion actualizada
-  /*static Future<void> sendPushNotification(
-      ChatUser chatUser, String msg) async {
-    try {
-      final body = {
-        "message": {
-          "token": chatUser.pushToken,
-          "notification": {
-            "title": me.name, //our name should be send
-            "body": msg,
-          },
-        }
-      };
-
-      // Firebase Project > Project Settings > General Tab > Project ID
-      const projectID = 'direct-8ed55';
-
-      // get firebase admin token
-     AccessFirebaseToken accessToken = AccessFirebaseToken();
-     String bearerToken = await accessToken.getAccessToken();
-
-      log('bearerToken: $bearerToken');
-
-      // handle null token
-      if (bearerToken == null) return;
-
-      var res = await post(
-        Uri.parse(
-            'https://fcm.googleapis.com/v1/projects/$projectID/messages:send'),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json',
-          HttpHeaders.authorizationHeader: 'Bearer $bearerToken'
-        },
-        body: jsonEncode(body),
-      );
-
-      log('Response status: ${res.statusCode}');
-      log('Response body: ${res.body}');
-    } catch (e) {
-      log('\nsendPushNotificationE: $e');
-    }
-  }*/
-
-  //opcion video
   static Future<void> sendPushNotification(
       ChatUser chatUser, String msg) async {
     AccessFirebaseToken accessToken = AccessFirebaseToken();
@@ -132,7 +79,6 @@ class APIs {
     }
   }
 
-  //Verificar si el usuario existe o no
   static Future<bool> userExists() async {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
   }
@@ -146,8 +92,6 @@ class APIs {
     log('data : ${data.docs}');
 
     if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
-      //usuario existe
-
       print('user exists: ${data.docs.first.data()}');
 
       firestore
@@ -164,7 +108,6 @@ class APIs {
     }
   }
 
-  //Para obtner informacion actual del usuario
   static Future<void> getSelfInfo() async {
     await firestore.collection('users').doc(user.uid).get().then((user) async {
       if (user.exists) {
@@ -187,7 +130,7 @@ class APIs {
         id: user.uid,
         name: user.displayName.toString(),
         email: user.email.toString(),
-        about: "Hey, I'm using Direct",
+        about: "Hola, estoy usando Direct",
         image: user.photoURL.toString(),
         createdAt: time,
         isOnline: false,
@@ -211,16 +154,14 @@ class APIs {
   //para obtener todos los usuarios de la base de datos
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
       List<String> userIds) {
-    log('\nUserIds $userIds');
+    log('\nUserIds: $userIds');
 
     return firestore
-        .collection(('users'))
-        .where('id', whereIn: userIds)
-        //.where('id', isNotEqualTo: user.uid)
+        .collection('users')
+        .where('id', whereIn: userIds.isEmpty ? [''] : userIds)
         .snapshots();
   }
 
-///////////////////////
   static Future<void> sendFirstMessage(
       ChatUser chatUser, String msg, Type type) async {
     await firestore
@@ -239,7 +180,7 @@ class APIs {
     });
   }
 
-  //for getting specific user info
+  //informacion especifica del usuario
   static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
       ChatUser chatUser) {
     return firestore
@@ -274,9 +215,6 @@ class APIs {
         .update({'image': me.image});
   }
 
-  // *************** Chat Screen Related APIs *******************
-
-// useful for getting conversation id
   static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
       ? '${user.uid}_$id'
       : '${id}_${user.uid}';

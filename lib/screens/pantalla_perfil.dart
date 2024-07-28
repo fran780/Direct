@@ -4,10 +4,9 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/api/apis.dart';
 import 'package:direct/helper/dialogs.dart';
-import 'package:direct/models/chat_user.dart';
-import 'package:direct/screens/auth/login_screen.dart';
+import 'package:direct/models/usuarios_chat.dart';
+import 'package:direct/screens/auth/pantalla_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,16 +16,16 @@ import 'package:image_picker/image_picker.dart';
 import '../main.dart';
 
 //pantalla para ver la informacion del usuario
-class ProfileScreen extends StatefulWidget {
+class Pantalla_perfil extends StatefulWidget {
   final ChatUser user;
 
-  const ProfileScreen({super.key, required this.user});
+  const Pantalla_perfil({super.key, required this.user});
 
   @override
-  State<ProfileScreen> createState() => _HomeScreenState();
+  State<Pantalla_perfil> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<ProfileScreen> {
+class _HomeScreenState extends State<Pantalla_perfil> {
   final _formKey = GlobalKey<FormState>();
   String? _image;
 
@@ -37,7 +36,7 @@ class _HomeScreenState extends State<ProfileScreen> {
       onTap: () => FocusScope.of(context).unfocus,
 
       child: Scaffold(
-          appBar: AppBar(title: const Text('Profile Screen')),
+          appBar: AppBar(title: const Text('Perfil')),
           //Boton flotante para agregar un nuevo usuario
           floatingActionButton: Padding(
             padding: const EdgeInsets.only(bottom: 10),
@@ -47,7 +46,7 @@ class _HomeScreenState extends State<ProfileScreen> {
                 //mostrar progresos de dialogo
                 Dialogs.showProgressBar(context);
 
-              await APIs.updateActiveStatus(false);
+                await APIs.updateActiveStatus(false);
 
                 //salir de la app
                 await APIs.auth.signOut().then((value) async {
@@ -61,16 +60,14 @@ class _HomeScreenState extends State<ProfileScreen> {
 
                     //reemplazando la pantalla de inicio con la pantalla de inicio de sesión
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()));
+                        MaterialPageRoute(builder: (_) => const Pantalla_login()));
                   });
                 });
               },
               icon: const Icon(Icons.logout),
-              label: const Text('Logout'),
+              label: const Text('Cerrar sesion'),
             ),
           ),
-
-          // body:
           body: Form(
             key: _formKey,
             child: Padding(
@@ -147,14 +144,14 @@ class _HomeScreenState extends State<ProfileScreen> {
                       onSaved: (val) => APIs.me.name = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
-                          : 'Required Field',
+                          : 'Campo requerido',
                       decoration: InputDecoration(
                           prefixIcon:
                               const Icon(Icons.person, color: Colors.blue),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12)),
-                          hintText: 'eg. Happy Singh',
-                          label: Text('Name')),
+                          hintText: 'Cristiano Ronaldo',
+                          label: Text('Nombre')),
                     ),
 
                     SizedBox(height: mq.height * .02),
@@ -164,14 +161,14 @@ class _HomeScreenState extends State<ProfileScreen> {
                       onSaved: (val) => APIs.me.about = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
-                          : 'Required Field',
+                          : 'Campo requerido',
                       decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.info_outline,
                               color: Colors.blue),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12)),
-                          hintText: 'eg. Feeling Happy',
-                          label: Text('About')),
+                          hintText: 'Me siento feliz',
+                          label: Text('Información')),
                     ),
 
                     SizedBox(height: mq.height * .05),
@@ -195,7 +192,7 @@ class _HomeScreenState extends State<ProfileScreen> {
                         size: 28,
                       ),
                       label: const Text(
-                        'UPDATE',
+                        'ACTUALIZAR',
                         style: TextStyle(fontSize: 16),
                       ),
                     )
@@ -212,7 +209,8 @@ class _HomeScreenState extends State<ProfileScreen> {
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (_) {
           return ListView(
             shrinkWrap: true,
@@ -225,7 +223,7 @@ class _HomeScreenState extends State<ProfileScreen> {
 
               SizedBox(height: mq.height * .01),
 
-              //buttons
+              //botones
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -236,7 +234,7 @@ class _HomeScreenState extends State<ProfileScreen> {
                           fixedSize: Size(mq.width * .2, mq.height * .20)),
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
-                        // Pick an image.
+                        // Poner una imagen
                         final XFile? image = await picker.pickImage(
                             source: ImageSource.gallery, imageQuality: 80);
                         if (image != null) {
@@ -246,7 +244,6 @@ class _HomeScreenState extends State<ProfileScreen> {
                             _image = image.path;
                           });
                           APIs.updateProfilePicture(File(_image!));
-                          // for hiding bottom sheet
                           Navigator.pop(context);
                         }
                       },
@@ -258,8 +255,7 @@ class _HomeScreenState extends State<ProfileScreen> {
                           fixedSize: Size(mq.width * .2, mq.height * .20)),
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
-                        
-                        // Pick an image.
+
                         final XFile? image = await picker.pickImage(
                             source: ImageSource.camera, imageQuality: 80);
                         if (image != null) {
@@ -269,7 +265,6 @@ class _HomeScreenState extends State<ProfileScreen> {
                           });
 
                           APIs.updateProfilePicture(File(_image!));
-                          // for hiding bottom sheet
                           if (mounted) Navigator.pop(context);
                         }
                       },
@@ -280,6 +275,4 @@ class _HomeScreenState extends State<ProfileScreen> {
           );
         });
   }
-
-
 }

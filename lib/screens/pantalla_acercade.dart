@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class FeaturesScreen extends StatelessWidget {
+class Pantalla_acercade extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +18,7 @@ class FeaturesScreen extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16), // Espacio entre el título y las características
+          SizedBox(height: 16),
           FeatureTile(
             feature: 'La aplicación permitirá la interacción únicamente con contactos conocidos para mejorar la seguridad y privacidad.',
           ),

@@ -1,26 +1,24 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/api/apis.dart';
 import 'package:direct/helper/dialogs.dart';
-import 'package:direct/helper/my_date_util.dart';
+import 'package:direct/helper/conf_tiempo.dart';
 import 'package:direct/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver_updated/gallery_saver.dart';
 
-import '../models/message.dart';
+import '../models/mensaje.dart';
 
-class MessageCard extends StatefulWidget {
-  const MessageCard({super.key, required this.message});
+class Tarjeta_mensaje extends StatefulWidget {
+  const Tarjeta_mensaje({super.key, required this.message});
 
   final Message message;
 
   @override
-  State<MessageCard> createState() => _MessageCardState();
+  State<Tarjeta_mensaje> createState() => _Tarjeta_mensajeState();
 }
 
-class _MessageCardState extends State<MessageCard> {
+class _Tarjeta_mensajeState extends State<Tarjeta_mensaje> {
   @override
   Widget build(BuildContext context) {
     bool isMe = APIs.user.uid == widget.message.fromld;
@@ -301,7 +299,7 @@ class _MessageCardState extends State<MessageCard> {
                       color: Colors.blue,
                       size: 28,
                     ),
-                    Text(' Mensaje actualizado')
+                    Text(' Mensaje a actualizar')
                   ],
                 ),
 
@@ -337,7 +335,7 @@ class _MessageCardState extends State<MessageCard> {
                         APIs.updateMessage(widget.message, updatemsg);
                       },
                       child: const Text(
-                        'Update',
+                        'Actualizar',
                         style: TextStyle(color: Colors.blue, fontSize: 16),
                       ))
                 ],

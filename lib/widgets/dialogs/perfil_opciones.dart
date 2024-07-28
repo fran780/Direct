@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/main.dart';
-import 'package:direct/models/chat_user.dart';
-import 'package:direct/screens/view_profile_screen.dart';
+import 'package:direct/models/usuarios_chat.dart';
+import 'package:direct/screens/pantalla_verperfil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ProfileDialog extends StatelessWidget {
-  const ProfileDialog({super.key, required this.user});
+class Perfil_opciones extends StatelessWidget {
+  const Perfil_opciones({super.key, required this.user});
 
   final ChatUser user;
 
@@ -37,7 +37,7 @@ class ProfileDialog extends StatelessWidget {
                 ),
               ),
 
-              //user name
+              //nombre usuario
               Positioned(
                 left: mq.width * .04,
                 top: mq.height * .02,
@@ -47,7 +47,7 @@ class ProfileDialog extends StatelessWidget {
                         fontSize: 18, fontWeight: FontWeight.w500)),
               ),
 
-              //info button
+              //informacion boton
               Positioned(
                   right: 8,
                   top: 6,
@@ -57,7 +57,7 @@ class ProfileDialog extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => viewProfileScreen(user: user)));
+                              builder: (_) => Pantalla_verperfil(user: user)));
                     },
                     minWidth: 0,
                     padding: const EdgeInsets.all(0),

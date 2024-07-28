@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DevelopersScreen extends StatelessWidget {
+class Pantalla_desarrolladores extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

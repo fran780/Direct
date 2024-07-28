@@ -3,20 +3,20 @@ import 'dart:io';
 import 'package:direct/api/apis.dart';
 import 'package:direct/helper/dialogs.dart';
 import 'package:direct/main.dart';
-import 'package:direct/screens/home_screen.dart';
+import 'package:direct/screens/pantalla_listadechats.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class Pantalla_login extends StatefulWidget {
+  const Pantalla_login({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<Pantalla_login> createState() => _Pantalla_loginState();
 }
 
 // Pantalla Login - implementa iniciar sesión o registrarse con Google
-class _LoginScreenState extends State<LoginScreen> {
+class _Pantalla_loginState extends State<Pantalla_login> {
   bool _isAnimate = false;
 
   @override
@@ -42,11 +42,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
         if ((await APIs.userExists())) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              context, MaterialPageRoute(builder: (_) => const Pantalla_listadechats()));
         } else {
           await APIs.createUser().then((value) {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                context, MaterialPageRoute(builder: (_) => const Pantalla_listadechats()));
           });
         }
       }
@@ -56,14 +56,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<UserCredential?> _signInWithGoogle() async {
     try {
       await InternetAddress.lookup('google.com');
-      // Trigger the authentication flow
+      // Activar el flujo de autenticación
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      // Obtain the auth details from the request
+      // Detalles de autenticación de la solicitud
       final GoogleSignInAuthentication? googleAuth =
           await googleUser?.authentication;
 
-      // Create a new credential
+      // Crear una nueva credencial
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,

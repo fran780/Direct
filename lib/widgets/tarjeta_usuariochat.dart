@@ -1,24 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:direct/api/apis.dart';
-import 'package:direct/helper/my_date_util.dart';
-import 'package:direct/models/chat_user.dart';
-import 'package:direct/models/message.dart';
-import 'package:direct/screens/chat_screen.dart';
-import 'package:direct/widgets/dialogs/profile_dialog.dart';
+import 'package:direct/helper/conf_tiempo.dart';
+import 'package:direct/models/usuarios_chat.dart';
+import 'package:direct/models/mensaje.dart';
+import 'package:direct/screens/pantalla_chat.dart';
+import 'package:direct/widgets/dialogs/perfil_opciones.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
 
-class ChatUserCard extends StatefulWidget {
+class Tarejeta_usuariochat extends StatefulWidget {
   final ChatUser user;
 
-  const ChatUserCard({super.key, required this.user});
+  const Tarejeta_usuariochat({super.key, required this.user});
 
   @override
-  State<ChatUserCard> createState() => _ChatUserCardState();
+  State<Tarejeta_usuariochat> createState() => _Tarejeta_usuariochatState();
 }
 
-class _ChatUserCardState extends State<ChatUserCard> {
+class _Tarejeta_usuariochatState extends State<Tarejeta_usuariochat> {
   Message? _message;
 
   @override
@@ -33,7 +33,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => ChatScreen(user: widget.user)));
+                    builder: (_) => Pantalla_chats(user: widget.user)));
           },
           child: StreamBuilder(
             stream: APIs.getLastMessage(widget.user),
@@ -48,7 +48,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                   onTap: () {
                     showDialog(
                         context: context,
-                        builder: (_) => ProfileDialog(
+                        builder: (_) => Perfil_opciones(
                               user: widget.user,
                             ));
                   },

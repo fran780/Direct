@@ -1,21 +1,20 @@
 import 'package:direct/api/apis.dart';
 import 'package:direct/main.dart';
-import 'package:direct/screens/auth/login_screen.dart';
-import 'package:direct/screens/home_screen.dart';
+import 'package:direct/screens/auth/pantalla_login.dart';
+import 'package:direct/screens/pantalla_listadechats.dart';
 
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-//Pantalla Splash
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class Pantalla_bienvenida extends StatefulWidget {
+  const Pantalla_bienvenida({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<Pantalla_bienvenida> createState() => _Pantalla_bienvenidaState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _Pantalla_bienvenidaState extends State<Pantalla_bienvenida> {
   @override
   void initState() {
     super.initState();
@@ -28,13 +27,13 @@ class _SplashScreenState extends State<SplashScreen> {
       if (APIs.auth.currentUser != null) {
         print("User: ${APIs.auth.currentUser}");
 
-        //navega a home screen
+        //navega a pantalla lista de chats
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+            context, MaterialPageRoute(builder: (_) => const Pantalla_listadechats()));
       } else {
-        //navega a login Screen
+        //navega a pantalla de login
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+            context, MaterialPageRoute(builder: (_) => const Pantalla_login()));
       }
     });
   }
@@ -58,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
               bottom: mq.height * .15,
               width: mq.width,
               child: const Text(
-                'Direct Made For You 😃',
+                'Mantente conectado con Direct',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 16, color: Colors.black87, letterSpacing: 2),
