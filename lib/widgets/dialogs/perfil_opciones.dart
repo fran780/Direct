@@ -23,12 +23,13 @@ class Perfil_opciones extends StatelessWidget {
             children: [
               // Imagen de perfil del usuario
               Positioned(
-                top: mq.height * .075,
-                left: mq.width * .1,
+                top: mq.height * .086,
+                left: mq.width * .13,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(mq.height * .25),
+                  borderRadius: BorderRadius.circular(mq.height * .1),
                   child: CachedNetworkImage(
-                    width: mq.width * .5,
+                    width: mq.height * .2,
+                    height: mq.height * .2,
                     fit: BoxFit.cover,
                     imageUrl: user.image,
                     errorWidget: (context, url, error) =>

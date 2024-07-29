@@ -97,7 +97,6 @@ class _HomeScreenState extends State<Pantalla_perfil> {
                                 ))
                             :
 
-                            //imagen del servidor
                             ClipRRect(
                                 borderRadius:
                                     BorderRadius.circular(mq.height * .1),

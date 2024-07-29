@@ -53,6 +53,7 @@ class _Pantalla_listadechatsState extends State<Pantalla_listadechats> {
       //para ocultar el teclado cuando se detecta un toque en la pantalla
       onTap: () => FocusScope.of(context).unfocus(),
 
+      // ignore: deprecated_member_use
       child: WillPopScope(
         // Si la búsqueda está activada y se presiona el botón Atrás, cierre la búsqueda
         // o simplemente cerrar la pantalla actual con el botón Atrás
@@ -68,7 +69,6 @@ class _Pantalla_listadechatsState extends State<Pantalla_listadechats> {
         },
         child: Scaffold(
           appBar: AppBar(
-            leading: Icon(CupertinoIcons.home),
             title: _isSearching
                 ? TextField(
                     decoration: const InputDecoration(
@@ -239,7 +239,7 @@ class _Pantalla_listadechatsState extends State<Pantalla_listadechats> {
                         await APIs.addChatUser(email).then((value) {
                           if (!value) {
                             Dialogs.showSnackbar(
-                                context, 'User does not Exists');
+                                context, 'El usuario no existe');
                           }
                         });
                       }
