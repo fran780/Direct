@@ -26,25 +26,26 @@ class _HomeScreenState extends State<Pantalla_verperfil> {
 
       child: Scaffold(
           appBar: AppBar(title: Text(widget.user.name)),
+          floatingActionButton:
+              Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Se unió: ',
+                style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16),
+              ),
+              Text(
+                  MyDateUtil.getLastMessageTime(
+                      context: context,
+                      time: widget.user.createdAt,
+                      showYear: true),
+                  style: TextStyle(color: Colors.black54, fontSize: 15)),
+            ],
+          ),
 
-          floatingActionButton: //user about
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Se unió: ',
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16),
-                      ),
-                      Text(MyDateUtil.getLastMessageTime(context: context, time: widget.user.createdAt, showYear :true),
-                          style:
-                              TextStyle(color: Colors.black54, fontSize: 15)),
-                    ],
-                  ),
-
-          // body:
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: mq.width * .05),
             child: SingleChildScrollView(

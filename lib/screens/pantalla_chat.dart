@@ -52,9 +52,7 @@ class _Pantalla_chatsState extends State<Pantalla_chats> {
               automaticallyImplyLeading: false,
               flexibleSpace: _appBar(),
             ),
-
             backgroundColor: Color.fromARGB(255, 241, 250, 249),
-
             body: Column(
               children: [
                 Expanded(
@@ -112,8 +110,7 @@ class _Pantalla_chatsState extends State<Pantalla_chats> {
                   SizedBox(
                     height: mq.height * .30,
                     child: EmojiPicker(
-                      textEditingController:
-                          _textController,
+                      textEditingController: _textController,
                       config: Config(
                         bgColor: const Color.fromARGB(255, 234, 248, 255),
                         columns: 7,
@@ -294,13 +291,13 @@ class _Pantalla_chatsState extends State<Pantalla_chats> {
           MaterialButton(
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                if(_list.isEmpty){
-
-                  APIs.sendFirstMessage(widget.user, _textController.text, Type.text);
-
-                }else {
+                if (_list.isEmpty) {
+                  APIs.sendFirstMessage(
+                      widget.user, _textController.text, Type.text);
+                } else {
                   //mensaje simple
-                  APIs.sendMessage(widget.user, _textController.text, Type.text);
+                  APIs.sendMessage(
+                      widget.user, _textController.text, Type.text);
                 }
                 _textController.text = '';
               }

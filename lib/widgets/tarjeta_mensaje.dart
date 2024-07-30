@@ -54,15 +54,11 @@ class _Tarjeta_mensajeState extends State<Tarjeta_mensaje> {
                     topRight: Radius.circular(30),
                     bottomRight: Radius.circular(30))),
             child: widget.message.type == Type.text
-                ?
-                //Show text
-                Text(
+                ? Text(
                     widget.message.msg,
                     style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
-                :
-                //show image
-                ClipRRect(
+                : ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: CachedNetworkImage(
                       imageUrl: widget.message.msg,
@@ -278,69 +274,61 @@ class _Tarjeta_mensajeState extends State<Tarjeta_mensaje> {
         });
   }
 
-//dialog for updating message content
   void _showMessageUpdateDialog() {
     String updatemsg = widget.message.msg;
 
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
 
-                contentPadding: const EdgeInsets.only(
+              contentPadding: const EdgeInsets.only(
                   left: 24, right: 24, top: 20, bottom: 10),
 
-                //titulo
-                title: Row(
-                  children: const [
-                    Icon(
-                      Icons.message,
-                      color: Colors.blue,
-                      size: 28,
-                    ),
-                    Text(' Mensaje a actualizar')
-                  ],
-                ),
-
-                //contenido
-
-                content: TextFormField(
-                  initialValue: updatemsg,
-                  maxLines: null,
-                  onChanged: (value) => updatemsg = value,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15))),
-                ),
-
-                //actions
-                actions: [
-                  //cancel button
-                  MaterialButton(
-                      onPressed: () {
-                        //hide alert dialog
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Cancelar',
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
-                      )),
-
-                  //update button
-                  MaterialButton(
-                      onPressed: () {
-                        //hide alert dialog
-                        Navigator.pop(context);
-                        APIs.updateMessage(widget.message, updatemsg);
-                      },
-                      child: const Text(
-                        'Actualizar',
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
-                      ))
+              //titulo
+              title: Row(
+                children: const [
+                  Icon(
+                    Icons.message,
+                    color: Colors.blue,
+                    size: 28,
+                  ),
+                  Text(' Mensaje a actualizar')
                 ],
-                
-                ));
+              ),
+
+              //contenido
+
+              content: TextFormField(
+                initialValue: updatemsg,
+                maxLines: null,
+                onChanged: (value) => updatemsg = value,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15))),
+              ),
+
+              actions: [
+                MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    )),
+                MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      APIs.updateMessage(widget.message, updatemsg);
+                    },
+                    child: const Text(
+                      'Actualizar',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    ))
+              ],
+            ));
   }
 }
 

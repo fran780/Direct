@@ -231,7 +231,6 @@ class _Pantalla_listadechatsState extends State<Pantalla_listadechats> {
                       'Cancelar',
                       style: TextStyle(color: Colors.blue, fontSize: 16),
                     )),
-
                 MaterialButton(
                     onPressed: () async {
                       Navigator.pop(context);

@@ -59,8 +59,10 @@ class _HomeScreenState extends State<Pantalla_perfil> {
                     APIs.auth = FirebaseAuth.instance;
 
                     //reemplazando la pantalla de inicio con la pantalla de inicio de sesión
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (_) => const Pantalla_login()));
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const Pantalla_login()));
                   });
                 });
               },
@@ -95,9 +97,7 @@ class _HomeScreenState extends State<Pantalla_perfil> {
                                   height: mq.height * .2,
                                   fit: BoxFit.cover,
                                 ))
-                            :
-
-                            ClipRRect(
+                            : ClipRRect(
                                 borderRadius:
                                     BorderRadius.circular(mq.height * .1),
                                 child: CachedNetworkImage(

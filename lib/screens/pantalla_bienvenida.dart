@@ -3,7 +3,6 @@ import 'package:direct/main.dart';
 import 'package:direct/screens/auth/pantalla_login.dart';
 import 'package:direct/screens/pantalla_listadechats.dart';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,15 +20,16 @@ class _Pantalla_bienvenidaState extends State<Pantalla_bienvenida> {
     Future.delayed(const Duration(seconds: 2), () {
       //sale de pantalla completa
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      SystemChrome.setSystemUIOverlayStyle(
-          const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white, statusBarColor: Colors.white));
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.white,
+          statusBarColor: Colors.white));
 
       if (APIs.auth.currentUser != null) {
         print("User: ${APIs.auth.currentUser}");
 
         //navega a pantalla lista de chats
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const Pantalla_listadechats()));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) => const Pantalla_listadechats()));
       } else {
         //navega a pantalla de login
         Navigator.pushReplacement(

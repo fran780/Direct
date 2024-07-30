@@ -25,7 +25,6 @@ class _Tarejeta_usuariochatState extends State<Tarejeta_usuariochat> {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: mq.width * .04, vertical: 4),
-      // color: Colors.blue.shade100,
       elevation: 0.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: InkWell(
@@ -66,7 +65,6 @@ class _Tarejeta_usuariochatState extends State<Tarejeta_usuariochat> {
 
                 title: Text(widget.user.name),
 
-                //
                 subtitle: Text(
                     _message != null
                         ? _message!.type == Type.image
